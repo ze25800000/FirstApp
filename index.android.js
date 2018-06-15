@@ -8,11 +8,13 @@ import React, {Component} from 'react';
 import {
     AppRegistry,
     StyleSheet,
+    Navigator,
     Text,
     View,
     Image
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
+import Boy from './Boy'
 
 export default class demo extends Component {
     constructor(props) {
@@ -25,7 +27,7 @@ export default class demo extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TabNavigator>
+                {/*<TabNavigator>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_popular'}
                         selectedTitleStyle={{color: 'red'}}
@@ -68,7 +70,16 @@ export default class demo extends Component {
                         onPress={() => this.setState({selectedTab: 'tb_my'})}>
                         <View style={styles.page2}></View>
                     </TabNavigator.Item>
-                </TabNavigator>
+                </TabNavigator>*/}
+                <Navigator
+                    initialRoute={{
+                        component: Boy
+                    }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        return <Component navigator={navigator} {...route.params}/>
+                    }}
+                ></Navigator>
             </View>
         );
     }
