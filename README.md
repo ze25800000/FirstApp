@@ -324,3 +324,6 @@ export default class HttpUtils {
     }
 }
 ```
+
+# 4-4 项目启动引导流程实现
+![启动引导流程图](http://pae9ggjgt.bkt.clouddn.com/4-4-1.app%E5%90%AF%E5%8A%A8%E5%BC%95%E5%AF%BC%E6%B5%81%E7%A8%8B.jpg)
