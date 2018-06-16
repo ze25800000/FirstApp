@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Boy from './Boy'
+import ListViewTest from './ListView'
 
 export default class demo extends Component {
     constructor(props) {
@@ -70,7 +71,7 @@ export default class demo extends Component {
                         onPress={() => this.setState({selectedTab: 'tb_my'})}>
                         <View style={styles.page2}></View>
                     </TabNavigator.Item>
-                </TabNavigator>*/}
+                </TabNavigator>
                 <Navigator
                     initialRoute={{
                         component: Boy
@@ -79,7 +80,8 @@ export default class demo extends Component {
                         let Component = route.component;
                         return <Component navigator={navigator} {...route.params}/>
                     }}
-                ></Navigator>
+                ></Navigator>*/}
+                <ListViewTest/>
             </View>
         );
     }

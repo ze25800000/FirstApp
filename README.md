@@ -67,7 +67,7 @@ renderSelectedIcon={() => <Image style={[styles.image, {tintColor: 'red'}]} sour
       }}
 >回赠巧克力</Text>
 ```
-# 1-7，8,9 自定义组件NavigationBar
+# 1-7,8,9 自定义组件NavigationBar
 ![navigationBar](http://pae9ggjgt.bkt.clouddn.com/navigationBar.jpg)
 - 需要引入的组件
 ```
@@ -188,4 +188,61 @@ renderButton(image) {
     }
 />
 
+```
+4-1 ListView列表、下拉刷新、上拉加载的基本使用
+- 首先导入ListView，创建数据源，在state中设置dataSource初始值
+```
+constructor(props) {
+    super(props)
+    // 创建数据源
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+    this.state = {
+        // 设置初始值
+        dataSource: ds.cloneWithRows(data.result),
+        isLoading: true
+    }
+    this.onLoad()
+}
+```
+- 渲染ListView
+```
+<ListView
+    // 关联dataSource
+    dataSource={this.state.dataSource}
+    // 为每一行指定显示效果
+    renderRow={(item) => this.renderRow(item)}
+    // 为每一行设置分隔线或视图
+    renderSeparator={(sectionID, rowID, adjacentRowHighlighted) => this.renderSeparator(sectionID, rowID, adjacentRowHighlighted)}
+    // 设置底部视图
+    renderFooter={() => this.renderFooter()}
+    // 使用RefreshControl组件实现下拉刷新
+    refreshControl={<RefreshControl
+        refreshing={this.state.isLoading}
+        onRefresh={() => this.onLoad()}
+    />}
+/>
+```
+- 使用toast组件
+```
+npm i react-native-easy-toast -S
+
+// 引入组件，和常量
+import Toast, {DURATION} from 'react-native-easy-toast'
+
+// toast组件放在在最底部
+<Toast ref={toast => {
+    this.toast = toast
+}}/>
+
+// 点击
+onPress={() => {
+    this.toast.show('你单击了：' + item.fullName, DURATION.LENGTH_LONG)
+}}
+```
+
+- 使用外部图片
+```
+<Image
+    style={{width: 400, height: 100}}
+    source={{uri: 'https://ss0.f=JPG?w=218&h=146&s=03F44522BEB613A318273E650300E06C'}}/>
 ```
