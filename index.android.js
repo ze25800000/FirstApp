@@ -16,6 +16,7 @@ import {
 import TabNavigator from 'react-native-tab-navigator';
 import Boy from './Boy'
 import ListViewTest from './ListView'
+import FetchTest from './FetchTest'
 
 export default class demo extends Component {
     constructor(props) {
@@ -81,7 +82,7 @@ export default class demo extends Component {
                         return <Component navigator={navigator} {...route.params}/>
                     }}
                 ></Navigator>*/}
-                <ListViewTest/>
+                <FetchTest/>
             </View>
         );
     }

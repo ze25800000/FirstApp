@@ -189,7 +189,7 @@ renderButton(image) {
 />
 
 ```
-4-1 ListView列表、下拉刷新、上拉加载的基本使用
+# 4-1 ListView列表、下拉刷新、上拉加载的基本使用
 - 首先导入ListView，创建数据源，在state中设置dataSource初始值
 ```
 constructor(props) {
@@ -245,4 +245,44 @@ onPress={() => {
 <Image
     style={{width: 400, height: 100}}
     source={{uri: 'https://ss0.f=JPG?w=218&h=146&s=03F44522BEB613A318273E650300E06C'}}/>
+```
+
+# 4-2 网络编程利器-Fetch的基本使用
+[Fetch](https://facebook.github.io/react-native/docs/network.html#using-fetch)
+- get请求
+```
+fetch(url)
+    .then(response => response.json())
+    .then(result => {
+        this.setState({
+            result: JSON.stringify(result)
+        })
+    })
+    .catch(error => {
+        this.setState({
+            result: JSON.stringify(error)
+        })
+    })
+```
+- post请求
+```
+fetch(url, {
+    method: 'POST',
+    header: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+})
+    .then(response => response.json())
+    .then(result => {
+        this.setState({
+            result: JSON.stringify(result)
+        })
+    })
+    .catch(error => {
+        this.setState({
+            result: JSON.stringify(error)
+        })
+    })
 ```
