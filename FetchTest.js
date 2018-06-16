@@ -7,6 +7,7 @@ import {
     StyleSheet
 } from 'react-native'
 import NavigationBar from './NavigationBar'
+import HttpUtils from './HttpUtils'
 
 export default class FetchTest extends Component {
     constructor(props) {
@@ -16,41 +17,30 @@ export default class FetchTest extends Component {
         }
     }
 
-    onLoad(url) {
-        fetch(url)
-            .then(response => response.json())
-            .then(result => {
-                this.setState({
-                    result: JSON.stringify(result)
-                })
+    async onLoad(url) {
+        try {
+            let result = await HttpUtils.get(url)
+            this.setState({
+                result: JSON.stringify(result)
             })
-            .catch(error => {
-                this.setState({
-                    result: JSON.stringify(error)
-                })
+        } catch (e) {
+            this.setState({
+                result: JSON.stringify(e)
             })
+        }
     }
 
-    onSubmit(url, data) {
-        fetch(url, {
-            method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(result => {
-                this.setState({
-                    result: JSON.stringify(result)
-                })
+    async onSubmit(url, data) {
+        try {
+            let result = await HttpUtils.post(url, data)
+            this.setState({
+                result: JSON.stringify(result)
             })
-            .catch(error => {
-                this.setState({
-                    result: JSON.stringify(error)
-                })
+        } catch (e) {
+            this.setState({
+                result: JSON.stringify(e)
             })
+        }
     }
 
     render() {
