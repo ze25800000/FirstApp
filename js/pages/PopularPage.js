@@ -5,6 +5,7 @@ import {
     Text,
     View,
     ListView,
+    RefreshControl,
     TextInput
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
@@ -23,8 +24,15 @@ export default class PopularPage extends Component {
         return <View style={styles.container}>
             <NavigationBar
                 title={'最热'}
+                statusBar={{
+                    backgroundColor: '#2196F3'
+                }}
             />
             <ScrollableTabView
+                tabBarBackgroundColor={'#2196F3'}
+                tabBarActiveTextColor={'#fff'}
+                tabBarInactiveTextColor={'mintcream'}
+                tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
                 renderTabBar={() => <ScrollableTabBar/>}
             >
                 <PopularTab tabLabel='Java'>JAVA</PopularTab>
@@ -41,7 +49,8 @@ class PopularTab extends Component {
         super(props)
         this.dataRepository = new DataRepository()
         this.state = {
-            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
+            isLoading: false
         }
     }
 
@@ -50,11 +59,15 @@ class PopularTab extends Component {
     }
 
     async loadData() {
+        this.setState({
+            isLoading: true
+        })
         let url = URL + this.props.tabLabel + QUERY_STR
         try {
             let result = await this.dataRepository.fetchNetRepository(url)
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(result.items)
+                dataSource: this.state.dataSource.cloneWithRows(result.items),
+                isLoading: false
             })
         } catch (e) {
             console.log(e)
@@ -66,10 +79,18 @@ class PopularTab extends Component {
     }
 
     render() {
-        return <View>
+        return <View style={{flex: 1}}>
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={(data) => this.renderRow(data)}
+                refreshControl={<RefreshControl
+                    refreshing={this.state.isLoading}
+                    onRefresh={() => this.loadData()}
+                    colors={['#2196F3']}
+                    tintColor={['#2196F3']}
+                    title={'Loading...'}
+                    titleColor={'#2196F3'}
+                />}
             />
         </View>
     }
