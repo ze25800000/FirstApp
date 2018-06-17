@@ -329,3 +329,71 @@ export default class HttpUtils {
 ![启动引导流程图](http://pae9ggjgt.bkt.clouddn.com/4-4-1.app%E5%90%AF%E5%8A%A8%E5%BC%95%E5%AF%BC%E6%B5%81%E7%A8%8B.jpg)
 
 # 5-1 Popular(最热)模块的数据层设计
+
+
+# 5-2 Popular(最热)模块的列表页面实现-1
+
+- 安装顶部导航滑动组件[react-native-scrollable-tab-view](https://github.com/skv-headless/react-native-scrollable-tab-view)
+- 引入组件
+```
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
+
+```
+- 使用组件
+```
+<ScrollableTabView
+    renderTabBar={() => <ScrollableTabBar/>}
+>
+    <PopularTab tabLabel='Java'>JAVA</PopularTab>
+    <PopularTab tabLabel='iOS'>IOS</PopularTab>
+    <PopularTab tabLabel='Android'>android</PopularTab>
+    <PopularTab tabLabel='Javascript'>js</PopularTab>
+</ScrollableTabView>
+// 必须给最外围标签加flex:1样式，才可以显示
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+})
+```
+- 封装子组件PopularTab
+```
+class PopularTab extends Component {
+    constructor(props) {
+        super(props)
+        this.dataRepository = new DataRepository()
+        this.state = {
+            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+        }
+    }
+
+    componentDidMount() {
+        this.loadData()
+    }
+
+    async loadData() {
+        let url = URL + this.props.tabLabel + QUERY_STR
+        try {
+            let result = await this.dataRepository.fetchNetRepository(url)
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(result.items)
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    renderRow(data) {
+        return <RepositoryCell data={data}/>
+    }
+
+    render() {
+        return <View>
+            <ListView
+                dataSource={this.state.dataSource}
+                renderRow={(data) => this.renderRow(data)}
+            />
+        </View>
+    }
+}
+```
