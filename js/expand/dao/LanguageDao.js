@@ -10,7 +10,7 @@ export default class LanguageDao {
         this.flag = flag
     }
 
-    save() {
+    save(data) {
         AsyncStorage.setItem(this.flag, JSON.stringify(data), error => {
 
         })

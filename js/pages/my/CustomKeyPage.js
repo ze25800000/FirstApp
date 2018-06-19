@@ -10,14 +10,43 @@ import {
 } from 'react-native'
 import NavigationBar from '../../common/NavigationBar'
 import ViewUtils from '../../common/util/ViewUtils'
+import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 
 export default class CustomKeyPage extends Component {
+    constructor(props) {
+        super(props)
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.state = {
+            dataArray: []
+        }
+    }
+
     onSave() {
         this.props.navigator.pop()
     }
 
-    renderView() {
+    componentDidMount() {
+        this.loadData()
+    }
 
+    async loadData() {
+        let result = await this.languageDao.fetch()
+        try {
+            this.setState({
+                dataArray: result
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    renderView() {
+        if (!this.state.dataArray || this.state.dataArray.length === 0) return null
+        let len = this.state.dataArray.length
+        let views = []
+        for (let i = 0, l = len - 2; i < l; i += 2) {
+
+        }
     }
 
     render() {
