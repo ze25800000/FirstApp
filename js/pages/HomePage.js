@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import PopularPage from './PopularPage'
+import AsyncStorageTest from '../../AsyncStorageTest'
 
 export default class HomePage extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ export default class HomePage extends Component {
                         renderSelectedIcon={() => <Image style={[styles.image, {tintColor: '#2196F3'}]}
                                                          source={require('../../res/images/ic_trending.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_trending'})}>
-                        <View style={styles.page2}></View>
+                        <AsyncStorageTest/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_favorite'}

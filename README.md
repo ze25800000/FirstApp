@@ -401,3 +401,41 @@ class PopularTab extends Component {
 # 5-3 Popular(最热)模块的列表页面实现-2
 
 # 5-4 Popular(最热)模块的列表页面实现-3
+
+# 5-5 [AsyncStorage](https://facebook.github.io/react-native/docs/asyncstorage.html#docsNav)异步数据存储技术解析
+
+```
+onSave() {
+    AsyncStorage.setItem(KEY, this.text, error => {
+        if (!error) {
+            this.toast.show('保存成功', DURATION.LENGTH_LONG)
+        } else {
+            this.toast.show('保存失败', DURATION.LENGTH_LONG)
+        }
+    })
+}
+
+onFetch() {
+    AsyncStorage.getItem(KEY, (error, result) => {
+        if (!error) {
+            if (result) {
+                this.toast.show('取出的内容：' + result)
+            } else {
+                this.toast.show('取出的内容不存在')
+            }
+        } else {
+            this.toast.show('取出失败')
+        }
+    })
+}
+
+onRemove() {
+    AsyncStorage.removeItem(KEY, error => {
+        if (!error) {
+            this.toast.show('删除成功', DURATION.LENGTH_LONG)
+        } else {
+            this.toast.show('删除失败', DURATION.LENGTH_LONG)
+        }
+    })
+}
+```
