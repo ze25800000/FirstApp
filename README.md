@@ -439,3 +439,7 @@ onRemove() {
     })
 }
 ```
+
+# 5-6 Popular(最热)模块的自定义标签功能实现-1
+![自定义订阅标签](http://pae9ggjgt.bkt.clouddn.com/5-6-1%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE.jpg)
+![自定义标签页功能流程](http://pae9ggjgt.bkt.clouddn.com/5-6-2%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE%E9%A1%B5%E5%8A%9F%E8%83%BD%E6%B5%81%E7%A8%8B.jpg)
