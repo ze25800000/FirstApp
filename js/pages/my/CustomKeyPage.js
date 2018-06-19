@@ -11,11 +11,13 @@ import {
 import NavigationBar from '../../common/NavigationBar'
 import ViewUtils from '../../common/util/ViewUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
+import CheckBox from 'react-native-check-box'
 
 export default class CustomKeyPage extends Component {
     constructor(props) {
         super(props)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.chanageValues = []
         this.state = {
             dataArray: []
         }
@@ -45,8 +47,47 @@ export default class CustomKeyPage extends Component {
         let len = this.state.dataArray.length
         let views = []
         for (let i = 0, l = len - 2; i < l; i += 2) {
-
+            views.push(
+                <View key={i}>
+                    <View style={styles.item}>
+                        {this.renderCheckBox(this.state.dataArray[i])}
+                        {this.renderCheckBox(this.state.dataArray[i + 1])}
+                    </View>
+                    <View style={styles.line}></View>
+                </View>
+            )
         }
+        views.push(
+            <View key={len - 1}>
+                <View style={styles.item}>
+                    {len % 2 === 0 ? this.renderCheckBox(this.state.dataArray[len - 2]) : null}
+                    {this.renderCheckBox(this.state.dataArray[len - 1])}
+                </View>
+                <View style={styles.line}></View>
+            </View>
+        )
+        return views
+    }
+
+    onClick(data) {
+        data.checked = !data.checked
+
+    }
+
+    renderCheckBox(data) {
+        let leftText = data.name
+        return (
+            <CheckBox
+                style={{flex: 1, padding: 10}}
+                onClick={() => this.onClick(data)}
+                leftText={leftText}
+                checkedImage={<Image style={{tintColor: '#6495ED'}}
+                                     source={require('./images/ic_check_box.png')}/>}
+                unCheckedImage={<Image style={{tintColor: '#6495ED'}}
+                                       source={require('./images/ic_check_box_outline_blank.png')}/>}
+
+            />
+        )
     }
 
     render() {
@@ -79,5 +120,13 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 20
+    },
+    line: {
+        height: 1,
+        backgroundColor: 'darkgray'
+    },
+    item: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })

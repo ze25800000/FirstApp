@@ -24,5 +24,15 @@
     "path": "AngularJS",
     "name": "AngularJS",
     "checked": false
+  },
+  {
+    "path": "PHP",
+    "name": "PHP",
+    "checked": false
+  },
+  {
+    "path": "jQuery",
+    "name": "jQuery",
+    "checked": false
   }
 ]

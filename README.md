@@ -445,3 +445,17 @@ onRemove() {
 ![自定义标签页功能流程](http://pae9ggjgt.bkt.clouddn.com/5-6-2%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE%E9%A1%B5%E5%8A%9F%E8%83%BD%E6%B5%81%E7%A8%8B.jpg)
 
 # 5-7 Popular(最热)模块的自定义标签功能实现-2
+# 5-8 Popular(最热)模块的自定义标签功能实现-3
+- npm i react-native-chack-box --save
+```
+<CheckBox
+    style={{flex: 1}}
+    onClick={() => this.onClick(data)}
+    leftText={leftText}
+    checkedImage={<Image
+        source={require('./images/ic_check_box.png')}/>}
+    unCheckedImage={<Image
+        source={require('./images/ic_check_box_outline_blank.png')}/>}
+
+/>
+```

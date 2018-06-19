@@ -16,6 +16,16 @@ export default class LanguageDao {
         })
     }
 
+    remove() {
+        AsyncStorage.removeItem(this.flag, error => {
+            if (!error) {
+                this.toast.show('删除成功', DURATION.LENGTH_LONG)
+            } else {
+                this.toast.show('删除失败', DURATION.LENGTH_LONG)
+            }
+        })
+    }
+
     fetch() {
         return new Promise((resolve, reject) => {
             AsyncStorage.getItem(this.flag, (error, result) => {
