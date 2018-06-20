@@ -19,4 +19,14 @@ export default class ArrayUtils {
         }
         array.push(item)
     }
+
+    static clone(from) {
+        if (!from) return []
+
+        let newArray = []
+        for (let i = 0, len = from.length; i < len; i++) {
+            newArray[i] = from[i]
+        }
+        return newArray
+    }
 }
