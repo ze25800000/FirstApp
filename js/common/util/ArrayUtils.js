@@ -16,7 +16,7 @@ export default class ArrayUtils {
                 array.splice(i, 1)
                 return
             }
-            array.push(item)
         }
+        array.push(item)
     }
 }

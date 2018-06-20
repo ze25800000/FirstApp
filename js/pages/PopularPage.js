@@ -12,22 +12,36 @@ import NavigationBar from '../common/NavigationBar'
 import DataRepository from '../expand/dao/DataRepository'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import RepositoryCell from '../common/RepositoryCell'
+import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
 export default class PopularPage extends Component {
     constructor(props) {
         super(props)
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.state = {
+            language: []
+        }
+    }
+
+    componentDidMount() {
+        this.loadData()
+    }
+
+    async loadData() {
+        let result = await this.languageDao.fetch()
+        try {
+            this.setState({
+                language: result
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     render() {
-        return <View style={styles.container}>
-            <NavigationBar
-                title={'最热'}
-                statusBar={{
-                    backgroundColor: '#2196F3'
-                }}
-            />
+        let content = this.state.language.length > 0 ?
             <ScrollableTabView
                 tabBarBackgroundColor={'#2196F3'}
                 tabBarActiveTextColor={'#fff'}
@@ -35,11 +49,19 @@ export default class PopularPage extends Component {
                 tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
                 renderTabBar={() => <ScrollableTabBar/>}
             >
-                <PopularTab tabLabel='Java'>JAVA</PopularTab>
-                <PopularTab tabLabel='iOS'>IOS</PopularTab>
-                <PopularTab tabLabel='Android'>android</PopularTab>
-                <PopularTab tabLabel='Javascript'>js</PopularTab>
-            </ScrollableTabView>
+                {this.state.language.map((result, i, arr) => {
+                    let lan = arr[i]
+                    return lan.checked ? <PopularTab key={i} tabLabel={lan.name}>{lan.name}</PopularTab> : null
+                })}
+            </ScrollableTabView> : null
+        return <View style={styles.container}>
+            <NavigationBar
+                title={'最热'}
+                statusBar={{
+                    backgroundColor: '#2196F3'
+                }}
+            />
+            {content}
         </View>
     }
 }

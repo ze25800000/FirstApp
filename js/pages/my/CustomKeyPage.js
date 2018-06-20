@@ -6,12 +6,14 @@ import {
     TouchableOpacity,
     View,
     ScrollView,
+    Alert,
     Image
 } from 'react-native'
 import NavigationBar from '../../common/NavigationBar'
 import ViewUtils from '../../common/util/ViewUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import CheckBox from 'react-native-check-box'
+import ArrayUtils from '../../common/util/ArrayUtils'
 
 export default class CustomKeyPage extends Component {
     constructor(props) {
@@ -24,7 +26,35 @@ export default class CustomKeyPage extends Component {
     }
 
     onSave() {
+        if (this.chanageValues.length === 0) {
+            this.props.navigator.pop()
+            return
+        }
+        this.languageDao.save(this.state.dataArray)
         this.props.navigator.pop()
+    }
+
+    onBack() {
+        if (this.chanageValues.length === 0) {
+            this.props.navigator.pop()
+            return
+        }
+        Alert.alert(
+            '提示',
+            '要保存修改么？',
+            [
+                {
+                    text: '不保存', onPress: () => {
+                        this.props.navigator.pop()
+                    }
+                },
+                {
+                    text: '保存', onPress: () => {
+                        this.onSave()
+                    }
+                }
+            ]
+        )
     }
 
     componentDidMount() {
@@ -71,7 +101,7 @@ export default class CustomKeyPage extends Component {
 
     onClick(data) {
         data.checked = !data.checked
-
+        ArrayUtils.updateArray(this.chanageValues, data)
     }
 
     renderCheckBox(data) {
@@ -81,6 +111,7 @@ export default class CustomKeyPage extends Component {
                 style={{flex: 1, padding: 10}}
                 onClick={() => this.onClick(data)}
                 leftText={leftText}
+                isChecked={data.checked}
                 checkedImage={<Image style={{tintColor: '#6495ED'}}
                                      source={require('./images/ic_check_box.png')}/>}
                 unCheckedImage={<Image style={{tintColor: '#6495ED'}}
@@ -101,7 +132,7 @@ export default class CustomKeyPage extends Component {
         return <View style={styles.container}>
             <NavigationBar
                 title={'自定义标签页'}
-                leftButton={ViewUtils.getLeftButton(() => this.onSave())}
+                leftButton={ViewUtils.getLeftButton(() => this.onBack())}
                 rightButton={rightButton}
             />
             <ScrollView>
