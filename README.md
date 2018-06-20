@@ -495,3 +495,21 @@ import SortableListView from 'react-native-sortable-listview'
 # 5-12 Popular(最热)模块的标签移除功能实现
 # 5-13 Popular(最热)模块的离线缓存功能实现
 ![离线缓存](http://pae9ggjgt.bkt.clouddn.com/5-13-1%E7%A6%BB%E7%BA%BF%E7%BC%93%E5%AD%98%E7%9A%84%E7%AD%96%E7%95%A5.jpg)
+# 5-14 WebView控件实现简单浏览器
+- [WebView](https://facebook.github.io/react-native/docs/webview.html#docsNav)
+
+```
+<WebView
+    ref={webView => this.webView = webView}
+    source={{uri: this.state.url}}
+    onNavigationStateChange={e => this.onNavigationStateChange(e)}
+/>
+
+onNavigationStateChange(e) {
+    this.setState({
+        canGoBack: e.canGoBack,
+        title: e.title
+    })
+}
+
+```
