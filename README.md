@@ -461,6 +461,19 @@ onRemove() {
 ```
 # 5-9 Popular(最热)模块的自定义标签功能实现-4
 # 5-10 Popular(最热)模块的标签排序功能实现-1
+![5-10-1](http://pae9ggjgt.bkt.clouddn.com/5-10-1%E6%A0%87%E7%AD%BE%E6%8E%92%E5%BA%8F%E5%8E%9F%E7%90%86%E5%9B%BE.jpg)
+- 排序关键方法
+```
+getSortResult() {
+    this.sortResultArray = ArrayUtils.clone(this.dataArray)
+    for (let i = 0, l = this.originalCheckedArray.length; i < l; i++) {
+        let item = this.originalCheckedArray[i]
+        let index = this.dataArray.indexOf(item)
+        this.sortResultArray.splice(index, 1, this.state.checkedArray[i])
+    }
+}
+```
+
 - 引入[react-native-sortable-listview](https://github.com/deanmcpherson/react-native-sortable-listview/blob/master/example.js)
 ```
 npm install react-native-sortable-listview --save
@@ -478,3 +491,4 @@ import SortableListView from 'react-native-sortable-listview'
     renderRow={row => <SortCell data={row}/>}
 />
 ```
+# 5-11 Popular(最热)模块的标签排序功能实现-2

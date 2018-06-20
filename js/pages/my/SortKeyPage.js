@@ -4,12 +4,16 @@ import {
     Navigator,
     Text,
     View,
+    TouchableHighlight,
+    TouchableOpacity,
+    Alert,
     Image
 } from 'react-native'
 import NavigationBar from '../../common/NavigationBar'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import ArrayUtils from '../../common/util/ArrayUtils'
 import SortableListView from 'react-native-sortable-listview'
+import ViewUtils from '../../common/util/ViewUtils'
 
 export default class MyPage extends Component {
     constructor(props) {
@@ -49,20 +53,70 @@ export default class MyPage extends Component {
         this.originalCheckedArray = ArrayUtils.clone(checkedArray)
     }
 
+    onSave(isChecked) {
+        if (!isChecked && ArrayUtils.isEquire(this.originalCheckedArray, this.state.checkedArray)) {
+            this.props.navigator.pop()
+            return
+        }
+        this.getSortResult()
+        this.languageDao.save(this.sortResultArray)
+        this.props.navigator.pop()
+    }
+
+    onBack() {
+        if (ArrayUtils.isEquire(this.originalCheckedArray, this.state.checkedArray)) {
+            this.props.navigator.pop()
+            return
+        }
+        Alert.alert(
+            '提示',
+            '要保存修改么？',
+            [
+                {
+                    text: '不保存', onPress: () => {
+                        this.props.navigator.pop()
+                    }
+                },
+                {
+                    text: '保存', onPress: () => {
+                        this.onSave(true)
+                    }
+                }
+            ]
+        )
+    }
+
+    getSortResult() {
+        this.sortResultArray = ArrayUtils.clone(this.dataArray)
+        for (let i = 0, l = this.originalCheckedArray.length; i < l; i++) {
+            let item = this.originalCheckedArray[i]
+            let index = this.dataArray.indexOf(item)
+            this.sortResultArray.splice(index, 1, this.state.checkedArray[i])
+        }
+    }
+
     render() {
+        let rightButton = <TouchableOpacity
+            onPress={() => this.onSave()}
+        >
+            <View style={{margin: 10}}>
+                <Text style={styles.title}>保存</Text>
+            </View>
+        </TouchableOpacity>
         return <View style={styles.container}>
             <NavigationBar
                 title={'标签排序'}
+                leftButton={ViewUtils.getLeftButton(() => this.onBack())}
+                rightButton={rightButton}
             />
             <SortableListView
-                style={{flex: 1}}
                 data={this.state.checkedArray}
                 order={Object.keys(this.state.checkedArray)}
-                onRowMoved={e => {
-                    order.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
-                    this.forceUpdate()
+                onRowMoved={(e) => {
+                    this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
+                    this.forceUpdate();
                 }}
-                renderRow={row => <SortCell data={row}/>}
+                renderRow={row => <SortCell data={row} {...this.props}/>}
             />
         </View>
     }
@@ -70,9 +124,19 @@ export default class MyPage extends Component {
 
 class SortCell extends Component {
     render() {
-        return <View>
-            <Text>{this.props.data.name}</Text>
-        </View>
+        return <TouchableHighlight
+            underlayColor={'#eee'}
+            delayLongPress={200}
+            style={styles.item}
+            {...this.props.sortHandlers}
+        >
+            <View style={styles.row}>
+                <Image
+                    style={styles.image}
+                    source={require('./images/ic_sort.png')}/>
+                <Text>{this.props.data.name}</Text>
+            </View>
+        </TouchableHighlight>
     }
 }
 
@@ -82,5 +146,25 @@ const styles = StyleSheet.create({
     },
     tips: {
         fontSize: 29
+    },
+    item: {
+        padding: 15,
+        backgroundColor: '#F8F8F8',
+        borderBottomWidth: 1,
+        borderColor: '#eee'
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    title: {
+        color: 'white',
+        fontSize: 20
+    },
+    image: {
+        tintColor: '#2196F3',
+        height: 16,
+        width: 16,
+        marginRight: 10
     }
 })
