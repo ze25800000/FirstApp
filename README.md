@@ -492,3 +492,5 @@ import SortableListView from 'react-native-sortable-listview'
 />
 ```
 # 5-11 Popular(最热)模块的标签排序功能实现-2
+# 5-12 Popular(最热)模块的标签移除功能实现
+# 5-13 Popular(最热)模块的离线缓存功能实现

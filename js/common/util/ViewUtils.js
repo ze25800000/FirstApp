@@ -21,4 +21,21 @@ export default class ViewUtils {
 
         </TouchableOpacity>
     }
+
+    static getRightButton(title, callback) {
+        return <TouchableOpacity
+            onPress={callback}
+        >
+            <View style={{margin: 10}}>
+                <Text style={styles.title}>{title}</Text>
+            </View>
+        </TouchableOpacity>
+    }
 }
+
+const styles = StyleSheet.create({
+    title: {
+        color: 'white',
+        fontSize: 20
+    }
+})
