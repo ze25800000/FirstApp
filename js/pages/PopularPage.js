@@ -86,11 +86,18 @@ class PopularTab extends Component {
         })
         let url = URL + this.props.tabLabel + QUERY_STR
         try {
-            let result = await this.dataRepository.fetchNetRepository(url)
+            let result = await this.dataRepository.fetchRepository(url)
+            let items = result && result.items ? result.items : result ? result : []
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(result.items),
+                dataSource: this.state.dataSource.cloneWithRows(items),
                 isLoading: false
             })
+            if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
+                let items = await this.dataRepository.fetchNetRepository(url)
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(items)
+                })
+            }
         } catch (e) {
             console.log(e)
         }
