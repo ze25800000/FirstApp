@@ -2,50 +2,60 @@ import React, {Component} from 'react';
 import {
     AsyncStorage
 } from 'react-native'
-import keys from '../../../res/data/keys.json'
-import langs from '../../../res/data/langs.json'
 
-export var FLAG_LANGUAGE = {flag_language: 'flag_language_language', flag_key: 'flag_language_key'}
+const FAVORITE_KEY_PREFIX = 'favorite_'
 export default class FavoriteDao {
     constructor(flag) {
         this.flag = flag
+        this.favoriteKey = FAVORITE_KEY_PREFIX + flag
     }
 
-    save(data) {
-        AsyncStorage.setItem(this.flag, JSON.stringify(data), error => {
-
+    saveFavoriteItem(key, value, callback) {
+        AsyncStorage.setItem(key, value, error => {
+            if (!error) this.updateFavoriteKeys(key, true)
         })
     }
 
-    remove() {
-        AsyncStorage.removeItem(this.flag, error => {
+    updateFavoriteKeys(key, isAdd) {
+        AsyncStorage.getItem(this.favoriteKey, (error, result) => {
             if (!error) {
-                this.toast.show('删除成功', DURATION.LENGTH_LONG)
-            } else {
-                this.toast.show('删除失败', DURATION.LENGTH_LONG)
+                var favoriteKeys = []
+                if (result) {
+                    favoriteKeys = JSON.parse(result)
+                }
+                var index = favoriteKey.indexOf(key)
+                if (isAdd) {
+                    if (index === -1) favoriteKeys.push(key)
+                } else {
+                    if (index !== -1) favoriteKeys.splice(index, 1)
+                }
+                AsyncStorage.setItem(this.favoriteKey, JSON.stringify(favoriteKeys))
             }
         })
+
     }
 
-    fetch() {
+    getFavoriteKeys() {
         return new Promise((resolve, reject) => {
-            AsyncStorage.getItem(this.flag, (error, result) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    if (result) {
-                        try {
-                            resolve(JSON.parse(result))
-                        } catch (e) {
-                            reject(e)
-                        }
-                    } else {
-                        let data = this.flag === FLAG_LANGUAGE.flag_key ? keys : langs
-                        this.save(data)
-                        resolve(data)
+            AsyncStorage.getItem(this.favoriteKey, (error, result) => {
+                if (!error) {
+                    try {
+                        resolve(JSON.parse(result))
+                    } catch (e) {
+                        reject(e)
                     }
+                } else {
+                    reject(error)
                 }
             })
+        })
+    }
+
+    removeFavoriteItem(key) {
+        AsyncStorage.setItem(key, error => {
+            if (!error) {
+                this.updateFavoriteKeys(key, false)
+            }
         })
     }
 }

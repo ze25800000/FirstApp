@@ -706,3 +706,4 @@ renderRow(projectModel) {
     />
 }
 ```
+# 7-3 Favorite(收藏)模块的收藏状态数据DAO层设计
