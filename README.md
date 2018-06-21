@@ -683,3 +683,4 @@ componentDidMount() {
     this.loadData()
 }
 ```
+# 6-6 Trending(趋势)模块的自定义语言排序功能实现
