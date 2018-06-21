@@ -1,4 +1,3 @@
-import React, {Component} from 'react';
 import {
     AsyncStorage
 } from 'react-native'
@@ -19,11 +18,11 @@ export default class FavoriteDao {
     updateFavoriteKeys(key, isAdd) {
         AsyncStorage.getItem(this.favoriteKey, (error, result) => {
             if (!error) {
-                var favoriteKeys = []
+                let favoriteKeys = []
                 if (result) {
                     favoriteKeys = JSON.parse(result)
                 }
-                var index = favoriteKey.indexOf(key)
+                let index = favoriteKeys.indexOf(key)
                 if (isAdd) {
                     if (index === -1) favoriteKeys.push(key)
                 } else {
@@ -52,7 +51,7 @@ export default class FavoriteDao {
     }
 
     removeFavoriteItem(key) {
-        AsyncStorage.setItem(key, error => {
+        AsyncStorage.removeItem(key, error => {
             if (!error) {
                 this.updateFavoriteKeys(key, false)
             }

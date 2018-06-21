@@ -15,9 +15,13 @@ import RepositoryCell from '../common/RepositoryCell'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import Utils from '../common/util/Utils'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
+let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+
 export default class PopularPage extends Component {
     constructor(props) {
         super(props)
@@ -75,7 +79,8 @@ class PopularTab extends Component {
         this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular)
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
-            isLoading: false
+            isLoading: false,
+            favoriteKeys: []
         }
     }
 
@@ -87,7 +92,7 @@ class PopularTab extends Component {
         let projectModels = []
         let items = this.items
         for (let i = 0, len = items.length; i < len; i++) {
-            projectModels.push(new ProjectModel(items[i], false))
+            projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys)))
         }
         this.updateState({
             isLoading: false,
@@ -97,6 +102,16 @@ class PopularTab extends Component {
 
     getDataSource(data) {
         return this.state.dataSource.cloneWithRows(data)
+    }
+
+    async getFavoriteKeys() {
+        try {
+            let keys = await favoriteDao.getFavoriteKeys()
+            if (keys) this.updateState({favoriteKeys: keys})
+            this.flushFavoriteState()
+        } catch (e) {
+            this.flushFavoriteState()
+        }
     }
 
     updateState(dic) {
@@ -112,10 +127,10 @@ class PopularTab extends Component {
         try {
             let result = await this.dataRepository.fetchRepository(url)
             this.items = result && result.items ? result.items : result ? result : []
-            this.flushFavoriteState()
+            this.getFavoriteKeys()
             if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
                 this.items = await this.dataRepository.fetchNetRepository(url)
-                this.flushFavoriteState()
+                this.getFavoriteKeys()
             }
         } catch (e) {
             console.log(e)
@@ -125,19 +140,25 @@ class PopularTab extends Component {
         }
     }
 
-    onSelect(item) {
+    onSelect(projectModel) {
         this.props.navigator.push({
+            title: projectModel.item.full_name,
             component: RepositoryDetail,
             params: {
-                item: item,
+                projectModel: projectModel,
                 ...this.props
             }
         })
     }
 
     onFavorite(item, isFavorite) {
-
+        if (isFavorite) {
+            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
+        } else {
+            favoriteDao.removeFavoriteItem(item.id.toString())
+        }
     }
+
 
     renderRow(projectModel) {
         return <RepositoryCell
