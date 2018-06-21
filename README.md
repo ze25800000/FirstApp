@@ -540,3 +540,19 @@ renderRow(data) {
 # 6-1 Trending(趋势)模块的数据接口实现原理及使用详解
 
 # 6-2 Trending(趋势)模块的数据层设计
+
+# 6-3 Trending(趋势)模块的列表页面实现
+- 引入[react-native-htmlview](https://github.com/jsdf/react-native-htmlview)
+```
+let description = `<p>${data.description}</p>`
+
+<HTMLView
+    value={description}
+    onLinkPress={(url) => {
+    }}
+    stylesheet={{
+        p: styles.description,
+        a: styles.description
+    }}
+/>
+```
