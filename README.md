@@ -513,3 +513,27 @@ onNavigationStateChange(e) {
 }
 
 ```
+# 5-15 Popular(最热)模块的详情页功能实现
+- 注意使用{...this.props}专递延展属性，延展属性中包含根中的navagator
+```
+<PopularPage {...this.props}/>
+
+
+{this.state.language.map((result, i, arr) => {
+    let lan = arr[i]
+    return lan.checked ?
+        <PopularTab key={i} tabLabel={lan.name} {...this.props}>{lan.name}</PopularTab> : null
+})}
+
+```
+- 踩坑点：
+```
+renderRow(data) {
+    return <RepositoryCell
+        // 不要写成(data) => this.onSelect(data)
+        onSelect={() => this.onSelect(data)}
+        key={data.id}
+        data={data}/>
+}
+
+```

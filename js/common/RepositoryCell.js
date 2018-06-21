@@ -10,6 +10,7 @@ import {
 export default class RepositoryCell extends Component {
     render() {
         return <TouchableOpacity
+            onPress={this.props.onSelect}
             style={styles.container}
         >
             <View style={styles.cell_container}>
