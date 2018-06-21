@@ -19,7 +19,6 @@ export default class CustomKeyPage extends Component {
     constructor(props) {
         super(props)
         this.isRemoveKey = this.props.isRemoveKey ? true : false
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
         this.chanageValues = []
         this.state = {
             dataArray: []
@@ -64,6 +63,7 @@ export default class CustomKeyPage extends Component {
     }
 
     componentDidMount() {
+        this.languageDao = new LanguageDao(this.props.flag)
         this.loadData()
     }
 
@@ -130,6 +130,7 @@ export default class CustomKeyPage extends Component {
 
     render() {
         let title = this.isRemoveKey ? '标签移除' : '自定义标签页'
+        title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title
         let rightButtonTitle = this.isRemoveKey ? '移除' : '保存'
         return <View style={styles.container}>
             <NavigationBar

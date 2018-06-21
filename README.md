@@ -657,3 +657,29 @@ componentWillReceiveProps(nextProps) {
 }
 
 ```
+# 6-5 Trending(趋势)模块的自定义语言功能实现
+- 使用FLAG_LANGUAGE做标识 import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
+- 传入flag标识
+```
+<Text
+    style={styles.tips}
+    onPress={() => {
+        this.props.navigator.push({
+            component: CustomKeyPage,
+            params: {
+                ...this.props,
+                flag: FLAG_LANGUAGE.flag_key
+            }
+        })
+    }}
+>自定义标签</Text>
+```
+
+- 根据传人的flag，加载不同的数据
+
+```
+componentDidMount() {
+    this.languageDao = new LanguageDao(this.props.flag)
+    this.loadData()
+}
+```
