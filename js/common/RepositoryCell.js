@@ -11,9 +11,14 @@ export default class RepositoryCell extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isFavorite: false,
-            favoriteIcon: require('../../res/images/ic_unstar_transparent.png')
+            isFavorite: this.props.projectModel.isFavorite,
+            favoriteIcon: this.props.projectModel.isFavorite ?
+                require('../../res/images/ic_star.png') : require('../../res/images/ic_unstar_transparent.png')
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setFavoriteState(nextProps.projectModel.isFavorite)
     }
 
     setFavoriteState(isFavorite) {
@@ -25,10 +30,11 @@ export default class RepositoryCell extends Component {
 
     onPressFavorite() {
         this.setFavoriteState(!this.state.isFavorite)
+        this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite)
     }
 
     render() {
-        let data = this.props.data
+        let item = this.props.projectModel.item ? this.props.projectModel.item : this.props.projectModel
         let favoriteButton = <TouchableOpacity
             onPress={() => this.onPressFavorite()}
         >
@@ -45,18 +51,18 @@ export default class RepositoryCell extends Component {
             style={styles.container}
         >
             <View style={styles.cell_container}>
-                <Text style={styles.title}>{data.full_name}</Text>
-                <Text style={styles.description}>{data.description}</Text>
+                <Text style={styles.title}>{item.full_name}</Text>
+                <Text style={styles.description}>{item.description}</Text>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text>Author:</Text>
                         <Image
                             style={{height: 22, width: 22}}
-                            source={{uri: data.owner.avatar_url}}/>
+                            source={{uri: item.owner.avatar_url}}/>
                     </View>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text>Stars:</Text>
-                        <Text>{data.stargazers_count}</Text>
+                        <Text>{item.stargazers_count}</Text>
                     </View>
                     {favoriteButton}
                 </View>

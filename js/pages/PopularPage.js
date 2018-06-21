@@ -14,6 +14,7 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import RepositoryCell from '../common/RepositoryCell'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import RepositoryDetail from './RepositoryDetail'
+import ProjectModel from '../model/ProjectModel'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -82,26 +83,45 @@ class PopularTab extends Component {
         this.loadData()
     }
 
+    flushFavoriteState() {
+        let projectModels = []
+        let items = this.items
+        for (let i = 0, len = items.length; i < len; i++) {
+            projectModels.push(new ProjectModel(items[i], false))
+        }
+        this.updateState({
+            isLoading: false,
+            dataSource: this.getDataSource(projectModels)
+        })
+    }
+
+    getDataSource(data) {
+        return this.state.dataSource.cloneWithRows(data)
+    }
+
+    updateState(dic) {
+        if (!this) return
+        this.setState(dic)
+    }
+
     async loadData() {
-        this.setState({
+        this.updateState({
             isLoading: true
         })
         let url = URL + this.props.tabLabel + QUERY_STR
         try {
             let result = await this.dataRepository.fetchRepository(url)
-            let items = result && result.items ? result.items : result ? result : []
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(items),
-                isLoading: false
-            })
+            this.items = result && result.items ? result.items : result ? result : []
+            this.flushFavoriteState()
             if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
-                let items = await this.dataRepository.fetchNetRepository(url)
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items)
-                })
+                this.items = await this.dataRepository.fetchNetRepository(url)
+                this.flushFavoriteState()
             }
         } catch (e) {
             console.log(e)
+            this.updateState({
+                isLoading: false
+            })
         }
     }
 
@@ -115,11 +135,17 @@ class PopularTab extends Component {
         })
     }
 
-    renderRow(data) {
+    onFavorite(item, isFavorite) {
+
+    }
+
+    renderRow(projectModel) {
         return <RepositoryCell
-            onSelect={() => this.onSelect(data)}
-            key={data.id}
-            data={data}/>
+            onSelect={() => this.onSelect(projectModel)}
+            key={projectModel.item.id}
+            projectModel={projectModel}
+            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        />
     }
 
     render() {

@@ -685,3 +685,24 @@ componentDidMount() {
 ```
 # 6-6 Trending(趋势)模块的自定义语言排序功能实现
 # 7-1 为Popular(最热)模块的列表页添加收藏功能-1
+# 7-2 为Popular(最热)模块的列表页添加收藏功能-2
+- 点击子组件向父组件传递回调方法
+```
+// 子组件
+onPressFavorite() {
+    this.setFavoriteState(!this.state.isFavorite)
+    this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite)
+}
+```
+```
+// 父组件接受回调方法
+renderRow(projectModel) {
+    return <RepositoryCell
+        onSelect={() => this.onSelect(projectModel)}
+        key={projectModel.item.id}
+        projectModel={projectModel}
+        // 接受子组件的回调方法 和 参数
+        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+    />
+}
+```
