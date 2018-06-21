@@ -556,3 +556,104 @@ let description = `<p>${data.description}</p>`
     }}
 />
 ```
+# 6-4 Pop弹窗功能实现
+- 引入[Popover](https://github.com/jeanregisser/react-native-popover)组件，注意：不要使用npm方式安装，而是直接下载[Popover.js](https://raw.githubusercontent.com/jeanregisser/react-native-popover/master/Popover.js)
+
+- 封装timeSpanTextArray模型
+```
+export default function TimeSpan(showText, searchText) {
+    this.showText = showText
+    this.searchText = searchText
+}
+```
+- 在TrendingPage.js中定义
+```
+let timeSpanTextArray = [
+    new TimeSpan('今 天', 'since=daily'),
+    new TimeSpan('本 周', 'since=weekly'),
+    new TimeSpan('本 月', 'since=monthly')
+]
+```
+
+- 使用Popover
+```
+showPopover() {
+    this.refs.button.measure((ox, oy, width, height, px, py) => {
+        this.setState({
+            isVisible: true,
+            buttonRect: {x: px, y: py, width: width, height: height}
+        });
+    });
+}
+
+closePopover() {
+    this.setState({
+        isVisible: false
+    })
+}
+```
+
+- 定义navigationBar
+```
+ renderTitleView() {
+    return <View>
+        <TouchableOpacity
+            onPress={() => this.showPopover()}
+            ref='button'>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                    style={{
+                        fontSize: 18,
+                        color: 'white',
+                        fontWeight: '400'
+                    }}
+                >趋势 {this.state.timeSpan.showText}</Text>
+                <Image
+                    style={{width: 12, height: 12}}
+                    source={require('../../res/images/ic_spinner_triangle.png')}/>
+            </View>
+        </TouchableOpacity>
+    </View>
+}
+```
+- Popview放在render最底部
+```
+.......
+.......
+
+let timeSpanView =
+    <Popover
+        isVisible={this.state.isVisible}
+        fromRect={this.state.buttonRect}
+        onClose={() => this.closePopover()}
+        placement='bottom'
+        contentStyle={{backgroundColor: '#343434', opacity: 0.82}}
+    >
+        {timeSpanTextArray.map((result, i, arr) => {
+            return <TouchableOpacity key={i}>
+                <Text
+                    underlayColor={'transparent'}
+                    onPress={() => this.onSelectTimeSpan(arr[i])}
+                    style={{fontSize: 18, padding: 8, color: 'white', fontWeight: '400'}}
+                >{arr[i].showText}</Text>
+            </TouchableOpacity>
+        })}
+    </Popover>
+
+return <View style={styles.container}>
+    {navigationBar}
+    {content}
+    {timeSpanView}
+</View>
+```
+
+- 当用户选择时间类型是，使用componentWillReceiveProps接受timeSpan
+```
+
+componentWillReceiveProps(nextProps) {
+    if (nextProps.timeSpan !== this.props.timeSpan) {
+        this.loadData(nextProps.timeSpan)
+    }
+}
+
+```
