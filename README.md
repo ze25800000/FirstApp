@@ -684,3 +684,4 @@ componentDidMount() {
 }
 ```
 # 6-6 Trending(趋势)模块的自定义语言排序功能实现
+# 7-1 为Popular(最热)模块的列表页添加收藏功能-1
