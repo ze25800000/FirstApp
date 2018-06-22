@@ -13,6 +13,14 @@ import {
 } from 'react-native'
 import ParallaxScrollView from 'react-native-parallax-scroll-view'
 import ViewUtils from '../../common/util/ViewUtils'
+import FavoriteDao from '../../expand/dao/FavoriteDao'
+import {FLAG_STORAGE} from '../../expand/dao/DataRepository'
+import Utils from '../../common/util/Utils'
+import ProjectModel from '../../model/ProjectModel'
+import RepositoryCell from '../../common/RepositoryCell'
+import RepositoryDetail from '../RepositoryDetail'
+
+let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 
 export let FLAG_ABOUT = {flag_about: 'about', flag_about_me: 'about_me'}
 export default class AboutCommon {
@@ -20,6 +28,71 @@ export default class AboutCommon {
         this.props = props
         this.updateState = updateState
         this.flag_about = flag_about
+        this.repositories = []
+        this.favoriteKeys = null
+        this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+    }
+
+    onNotifyDataChanged(items) {
+        this.updateFavorite(items)
+    }
+
+    async updateFavorite(repositories) {
+        if (repositories) this.repositories = repositories
+        if (!this.repositories) return
+        if (!this.favoriteKeys) {
+            this.favoriteKeys = await  this.favoriteDao.getFavoriteKeys()
+        }
+        let projectModels = []
+        let items = this.repositories
+        for (let i = 0, len = items.length; i < len; i++) {
+            let data = items[i]
+            projectModels.push({
+                isFavorite: Utils.checkFavorite(this.repositories[i], this.favoriteKeys ? this.favoriteKeys : []),
+                item: data.item ? data.item : data
+            })
+        }
+        this.updateState({
+            projectModel: projectModels
+        })
+    }
+
+    onSelect(projectModel) {
+        let item = projectModel.item
+        this.props.navigator.push({
+            title: item.full_name,
+            component: RepositoryDetail,
+            params: {
+                flag: FLAG_STORAGE.flag_popular,
+                projectModel: projectModel,
+                parentComponent: this,
+                ...this.props
+            }
+        })
+    }
+
+    onFavorite(item, isFavorite) {
+        if (isFavorite) {
+            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
+        } else {
+            favoriteDao.removeFavoriteItem(item.id.toString())
+        }
+    }
+
+    renderRpository(projectModels) {
+        if (!projectModels || projectModels.length === 0) return null
+        let views = []
+        for (let i = 0, l = projectModels.length; i < l; i++) {
+            let projectModel = projectModels[i]
+            views.push(
+                <RepositoryCell
+                    onSelect={() => this.onSelect(projectModel)}
+                    key={projectModel.item.id}
+                    projectModel={projectModel}
+                    onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+                />
+            )
+        }
     }
 
     getParallaxRenderConfig(params) {

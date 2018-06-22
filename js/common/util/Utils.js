@@ -16,4 +16,14 @@ export default class Utils {
         }
         return false
     }
+
+    static checkDate(longTime) {
+        let currentDate = new Date();
+        let targetDate = new Date();
+        targetDate.setTime(longTime);
+        if (currentDate.getMonth() !== targetDate.getMonth()) return false;
+        if (currentDate.getDate() !== targetDate.getDate()) return false;
+        if (currentDate.getHours() - targetDate.getHours() > 4) return false;
+        return true;
+    }
 }

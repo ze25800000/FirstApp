@@ -76,15 +76,4 @@ export default class DataRepository {
         }
         AsyncStorage.setItem(url, JSON.stringify(wrapData), callback)
     }
-
-    checkDate(longTime) {
-        let currentDate = new Date();
-        let targetDate = new Date();
-        targetDate.setTime(longTime);
-        if (currentDate.getMonth() !== targetDate.getMonth()) return false;
-        if (currentDate.getDate() !== targetDate.getDate()) return false;
-        if (currentDate.getHours() - targetDate.getHours() > 4) return false;
-        return true;
-    }
-
 }
