@@ -6,6 +6,7 @@ import {
     View,
     ListView,
     RefreshControl,
+    DeviceEventEmitter,
     TextInput
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
@@ -76,6 +77,7 @@ export default class PopularPage extends Component {
 class PopularTab extends Component {
     constructor(props) {
         super(props)
+        this.isFavoriteChanged = false
         this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular)
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
@@ -86,6 +88,20 @@ class PopularTab extends Component {
 
     componentDidMount() {
         this.loadData()
+        this.listenner = DeviceEventEmitter.addListener('favoriteChanged_popular', () => {
+            this.isFavoriteChanged = true
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.listenner) this.listenner.remove()
+    }
+
+    componentWillReceiveProps() {
+        if (this.isFavoriteChanged) {
+            this.isFavoriteChanged = false
+            this.getFavoriteKeys()
+        }
     }
 
     flushFavoriteState() {

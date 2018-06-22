@@ -5,6 +5,7 @@ import {
     Text,
     View,
     ListView,
+    DeviceEventEmitter,
     RefreshControl,
     TextInput
 } from 'react-native'
@@ -16,7 +17,7 @@ import TrendingCell from '../common/TrendingCell'
 import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-
+import ArrayUtils from '../common/util/ArrayUtils'
 
 export default class FavoritePage extends Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class FavoriteTab extends Component {
     constructor(props) {
         super(props)
         this.favoriteDao = new FavoriteDao(this.props.flag)
+        this.unFavoriteItems = []
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
             isLoading: false,
@@ -62,18 +64,24 @@ class FavoriteTab extends Component {
     }
 
     componentDidMount() {
+        this.loadData(true)
     }
 
+    componentWillReceiveProps() {
+        this.loadData(false)
+    }
 
     updateState(dic) {
         if (!this) return
         this.setState(dic)
     }
 
-    async loadData() {
-        this.updateState({
-            isLoading: true
-        })
+    async loadData(isShowLoading) {
+        if (isShowLoading) {
+            this.updateState({
+                isLoading: true
+            })
+        }
         try {
             let items = await this.favoriteDao.getAllItems()
             let resultData = []
@@ -110,10 +118,19 @@ class FavoriteTab extends Component {
     }
 
     onFavorite(item, isFavorite) {
+        let key = this.props.flag === FLAG_STORAGE.flag_popular ? item.id.toString() : item.fullName
         if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
+            this.favoriteDao.saveFavoriteItem(key, JSON.stringify(item))
         } else {
-            favoriteDao.removeFavoriteItem(item.id.toString())
+            this.favoriteDao.removeFavoriteItem(key)
+        }
+        ArrayUtils.updateArray(this.unFavoriteItems, item)
+        if (this.unFavoriteItems.length > 0) {
+            if (this.props.flag === FLAG_STORAGE.flag_popular) {
+                DeviceEventEmitter.emit('favoriteChanged_popular')
+            } else {
+                DeviceEventEmitter.emit('favoriteChanged_trending')
+            }
         }
     }
 

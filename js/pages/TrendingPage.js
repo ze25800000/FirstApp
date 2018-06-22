@@ -7,6 +7,7 @@ import {
     View,
     ListView,
     RefreshControl,
+    DeviceEventEmitter,
     TouchableOpacity,
     TextInput
 } from 'react-native'
@@ -157,6 +158,7 @@ export default class TrendingPage extends Component {
 class TrendingTab extends Component {
     constructor(props) {
         super(props)
+        this.isFavoriteChanged = false
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
             isLoading: false,
@@ -166,11 +168,21 @@ class TrendingTab extends Component {
 
     componentDidMount() {
         this.loadData(this.props.timeSpan, true)
+        this.listenner = DeviceEventEmitter.addListener('favoriteChanged_trending', () => {
+            this.isFavoriteChanged = true
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.listenner) this.listenner.remove()
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.timeSpan !== this.props.timeSpan) {
             this.loadData(nextProps.timeSpan)
+        } else if (this.isFavoriteChanged) {
+            this.isFavoriteChanged = false
+            this.getFavoriteKeys()
         }
     }
 
