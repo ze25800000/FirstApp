@@ -751,4 +751,5 @@ getAllItems() {
 ```
  "react-native-parallax-scroll-view": "^0.19.0",
 ```
-8-5 My(我的)模块项目介绍页面简单实现（parallar-scroll-view）-2
+# 8-5 My(我的)模块项目介绍页面简单实现（parallar-scroll-view）-2
+# 8-6 My(我的)模块项目介绍页面复用代码提取技巧
