@@ -35,7 +35,7 @@ export default class RepositoryCell extends Component {
 
     render() {
         let item = this.props.projectModel.item ? this.props.projectModel.item : this.props.projectModel
-        let favoriteButton = <TouchableOpacity
+        let favoriteButton = this.props.projectModel.item ? <TouchableOpacity
             onPress={() => this.onPressFavorite()}
         >
             <Image
@@ -45,7 +45,7 @@ export default class RepositoryCell extends Component {
                 }, {tintColor: '#2196f3'}]}
                 source={this.state.favoriteIcon}
             />
-        </TouchableOpacity>
+        </TouchableOpacity> : null
         return <TouchableOpacity
             onPress={this.props.onSelect}
             style={styles.container}

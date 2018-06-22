@@ -18,12 +18,17 @@ import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import RepositoryDetail from './RepositoryDetail'
 import TimeSpan from '../model/TimeSpan'
 import Popover from '../common/Popover'
+import ProjectModel from '../model/ProjectModel'
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import Utils from '../common/util/Utils'
 
 let timeSpanTextArray = [
     new TimeSpan('今 天', 'since=daily'),
     new TimeSpan('本 周', 'since=weekly'),
     new TimeSpan('本 月', 'since=monthly')
 ]
+let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
+let dataRepository = new DataRepository(FLAG_STORAGE.flag_trending)
 const API_URL = 'https://github.com/trending/'
 export default class TrendingPage extends Component {
     constructor(props) {
@@ -152,10 +157,10 @@ export default class TrendingPage extends Component {
 class TrendingTab extends Component {
     constructor(props) {
         super(props)
-        this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending)
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
-            isLoading: false
+            isLoading: false,
+            favoriteKeys: []
         }
     }
 
@@ -173,39 +178,69 @@ class TrendingTab extends Component {
         this.loadData(this.props.timeSpan)
     }
 
+    flushFavoriteState() {
+        let projectModels = []
+        let items = this.items
+        for (let i = 0, len = items.length; i < len; i++) {
+            projectModels.push(new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys)))
+        }
+        this.updateState({
+            isLoading: false,
+            dataSource: this.getDataSource(projectModels)
+        })
+    }
+
+    getDataSource(data) {
+        return this.state.dataSource.cloneWithRows(data)
+    }
+
+    async getFavoriteKeys() {
+        try {
+            let keys = await favoriteDao.getFavoriteKeys()
+            if (keys) this.updateState({favoriteKeys: keys})
+            this.flushFavoriteState()
+        } catch (e) {
+            this.flushFavoriteState()
+        }
+    }
+
+
     async loadData(timeSpan, isRefresh) {
         this.updateState({
             isLoading: true
         })
         let url = this.genFetchUrl(timeSpan, this.props.path)
         try {
-            let result = await this.dataRepository.fetchRepository(url)
-            let items = result && result.items ? result.items : result ? result : []
-            this.updateState({
-                dataSource: this.state.dataSource.cloneWithRows(items),
-                isLoading: false
-            })
-            if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
-                let items = await this.dataRepository.fetchNetRepository(url)
-                this.updateState({
-                    dataSource: this.state.dataSource.cloneWithRows(items)
-                })
+            let result = await dataRepository.fetchRepository(url)
+            this.items = result && result.items ? result.items : result ? result : []
+            this.getFavoriteKeys()
+            if (result && result.update_date && !dataRepository.checkDate(result.update_date)) {
+                this.items = await dataRepository.fetchNetRepository(url)
+                this.getFavoriteKeys()
             }
         } catch (e) {
             console.log(e)
+            this.updateState({
+                isLoading: false
+            })
         }
     }
 
     updateState(dic) {
         if (!this) return
+        this.isRender = true
         this.setState(dic)
     }
 
-    onSelect(item) {
+    onSelect(projectModel) {
+        let item = projectModel.item
         this.props.navigator.push({
+            title: item.fullName,
             component: RepositoryDetail,
             params: {
-                item: item,
+                flag: FLAG_STORAGE.flag_trending,
+                projectModel: projectModel,
+                parentComponent: this,
                 ...this.props
             }
         })
@@ -215,11 +250,21 @@ class TrendingTab extends Component {
         return API_URL + category + '?' + timeSpan.searchText
     }
 
-    renderRow(data) {
+    onFavorite(item, isFavorite) {
+        if (isFavorite) {
+            favoriteDao.saveFavoriteItem(item.fullName, JSON.stringify(item))
+        } else {
+            favoriteDao.removeFavoriteItem(item.fullName)
+        }
+    }
+
+    renderRow(projectModel) {
         return <TrendingCell
-            onSelect={() => this.onSelect(data)}
-            key={data.id}
-            data={data}/>
+            onSelect={() => this.onSelect(projectModel)}
+            key={projectModel.item.fullName}
+            projectModel={projectModel}
+            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+        />
     }
 
     render() {

@@ -141,11 +141,14 @@ class PopularTab extends Component {
     }
 
     onSelect(projectModel) {
+        let item = projectModel.item
         this.props.navigator.push({
-            title: projectModel.item.full_name,
+            title: item.full_name,
             component: RepositoryDetail,
             params: {
+                flag: FLAG_STORAGE.flag_popular,
                 projectModel: projectModel,
+                parentComponent: this,
                 ...this.props
             }
         })
