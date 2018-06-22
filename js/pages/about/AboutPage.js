@@ -9,6 +9,7 @@ import {
     TouchableHighlight,
     Platform,
     Dimensions,
+    Linking,
     Image
 } from 'react-native'
 import ViewUtils from '../../common/util/ViewUtils'
@@ -18,6 +19,7 @@ import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import SortKeyPage from '../my/SortKeyPage'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon'
+import WebViewPage from '../WebViewPage'
 
 export default class AboutPage extends Component {
     constructor(props) {
@@ -35,8 +37,19 @@ export default class AboutPage extends Component {
             case MORE_MENU.About_Author:
                 break;
             case MORE_MENU.WebSite:
+                TargetComponent = WebViewPage
+                params.url = 'http://www.devio.org/io/GitHubPopular/'
+                params.title = 'GitHubPopular'
                 break;
             case MORE_MENU.Feedback:
+                let url = 'mailto:ze258100000@sina.com'
+                Linking.canOpenURL(url).then(supported => {
+                    if (!supported) {
+                        console.log('Can\'t handle url: ' + url);
+                    } else {
+                        return Linking.openURL(url);
+                    }
+                }).catch(err => console.error('An error occurred', err));
                 break;
         }
         if (TargetComponent) {
