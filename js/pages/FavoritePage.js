@@ -12,33 +12,26 @@ import NavigationBar from '../common/NavigationBar'
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import RepositoryCell from '../common/RepositoryCell'
+import TrendingCell from '../common/TrendingCell'
 import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-import Utils from '../common/util/Utils'
 
-const URL = 'https://api.github.com/search/repositories?q='
-const QUERY_STR = '&sort=stars'
 
 export default class FavoritePage extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
-    }
-
-    componentDidMount() {
-        this.loadData()
     }
 
     render() {
-        let NavigationBar =
+        let Navigation =
             <NavigationBar
                 title={'收藏'}
                 statusBar={{
                     backgroundColor: '#2196F3'
                 }}
             />
-        let content = this.state.language.length > 0 ?
+        let content =
             <ScrollableTabView
                 tabBarBackgroundColor={'#2196F3'}
                 tabBarActiveTextColor={'#fff'}
@@ -48,9 +41,10 @@ export default class FavoritePage extends Component {
             >
                 <FavoriteTab tabLabel={'最热'} {...this.props} flag={FLAG_STORAGE.flag_popular}/>
                 <FavoriteTab tabLabel={'趋势'} {...this.props} flag={FLAG_STORAGE.flag_trending}/>
-            </ScrollableTabView> : null
+            </ScrollableTabView>
+
         return <View style={styles.container}>
-            {NavigationBar}
+            {Navigation}
             {content}
         </View>
     }
@@ -81,11 +75,24 @@ class FavoriteTab extends Component {
             isLoading: true
         })
         try {
+            let items = await this.favoriteDao.getAllItems()
+            let resultData = []
+            for (let i = 0, len = items.length; i < len; i++) {
+                resultData.push(new ProjectModel(items[i], true))
+            }
+            this.updateState({
+                isLoading: false,
+                dataSource: this.getDataSource(resultData)
+            })
         } catch (e) {
             this.updateState({
                 isLoading: false
             })
         }
+    }
+
+    getDataSource(items) {
+        return this.state.dataSource.cloneWithRows(items)
     }
 
     onSelect(projectModel) {
@@ -112,10 +119,11 @@ class FavoriteTab extends Component {
 
 
     renderRow(projectModel) {
-        return <RepositoryCell
-            onSelect={() => this.onSelect(projectModel)}
-            key={projectModel.item.id}
+        let CellComponent = this.props.flag === FLAG_STORAGE.flag_popular ? RepositoryCell : TrendingCell
+        return <CellComponent
+            key={this.props.flag === FLAG_STORAGE.flag_popular ? projectModel.item.id : projectModel.item.fullName}
             projectModel={projectModel}
+            onSelect={() => this.onSelect(projectModel)}
             onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
         />
     }
@@ -125,6 +133,7 @@ class FavoriteTab extends Component {
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={(data) => this.renderRow(data)}
+                enableEmptySections={true}
                 refreshControl={<RefreshControl
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.loadData()}
