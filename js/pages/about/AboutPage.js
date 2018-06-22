@@ -7,14 +7,39 @@ import {
     ScrollView,
     ListView,
     TouchableHighlight,
+    Platform,
     Dimensions,
     Image
 } from 'react-native'
 import ParallaxScrollView from 'react-native-parallax-scroll-view'
+import ViewUtils from '../../common/util/ViewUtils'
+import {MORE_MENU} from '../../common/MoreMenu'
+import CustomKeyPage from '../my/CustomKeyPage'
+import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
+import SortKeyPage from '../my/SortKeyPage'
+import GlobalStyles from '../../../res/styles/GlobalStyles'
 
 export default class AboutPage extends Component {
     constructor(props) {
         super(props);
+    }
+
+    onClick(tab) {
+        let TargetComponent, params = {...this.props, menuType: tab}
+        switch (tab) {
+            case MORE_MENU.About_Author:
+                break;
+            case MORE_MENU.WebSite:
+                break;
+            case MORE_MENU.Feedback:
+                break;
+        }
+        if (TargetComponent) {
+            this.props.navigator.push({
+                component: TargetComponent,
+                params: params
+            })
+        }
     }
 
     getParallaxRenderConfig(params) {
@@ -57,30 +82,38 @@ export default class AboutPage extends Component {
         )
         config.renderFixedHeader = () => (
             <View key="fixed-header" style={styles.fixedSection}>
-                <Text style={styles.fixedSectionText}
-                      onPress={() => this.refs.ListView.scrollTo({x: 0, y: 0})}>
-                    Scroll to top
-                </Text>
+                {ViewUtils.getLeftButton(() => this.props.navigator.pop())}
             </View>
         )
         return config
     }
 
-    renderView(params) {
+    renderView(contentView, params) {
         let renderConfig = this.getParallaxRenderConfig(params)
         return (
             <ParallaxScrollView
-                headerBackgroundColor="#333"
+                headerBackgroundColor="#2196F3"
+                backgroundColor='#2196F3'
                 stickyHeaderHeight={STICKY_HEADER_HEIGHT}
                 parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
                 backgroundSpeed={10}
                 {...renderConfig}
-            />
+            >
+                {contentView}
+            </ParallaxScrollView>
         );
     }
 
     render() {
-        return this.renderView({
+        let content = <View>
+            {ViewUtils.getSettingItem(() => this.onClick(MORE_MENU.WebSite), require('../../../res/images/ic_computer.png'), MORE_MENU.WebSite, {tintColor: '#2196F3'})}
+            <View style={GlobalStyles.line}/>
+            {ViewUtils.getSettingItem(() => this.onClick(MORE_MENU.About_Author), require('../my/images/ic_insert_emoticon.png'), MORE_MENU.About_Author, {tintColor: '#2196F3'})}
+            <View style={GlobalStyles.line}/>
+            {ViewUtils.getSettingItem(() => this.onClick(MORE_MENU.Feedback), require('../../../res/images/ic_feedback.png'), MORE_MENU.Feedback, {tintColor: '#2196F3'})}
+            <View style={GlobalStyles.line}/>
+        </View>
+        return this.renderView(content, {
             'name': 'GitHub Popular',
             'description': '这是一个用来查看GitHub最受欢迎与最热项目的App,它基于React Native支持Android和iOS双平台。',
             'avatar': 'https://avatars3.githubusercontent.com/u/21348680?s=460&v=4',
@@ -110,8 +143,9 @@ const styles = StyleSheet.create({
     },
     stickySection: {
         height: STICKY_HEADER_HEIGHT,
-        width: 300,
-        justifyContent: 'flex-end'
+        paddingTop: (Platform.OS === 'ios') ? 20 : 0,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     stickySectionText: {
         color: 'white',
@@ -120,8 +154,15 @@ const styles = StyleSheet.create({
     },
     fixedSection: {
         position: 'absolute',
-        bottom: 10,
-        right: 10
+        bottom: 0,
+        right: 10,
+        left: 0,
+        top: 0,
+        paddingRight: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: (Platform.OS === 'ios') ? 20 : 0,
+        justifyContent: 'space-between'
     },
     fixedSectionText: {
         color: '#999',
