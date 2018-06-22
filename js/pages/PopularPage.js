@@ -128,7 +128,7 @@ class PopularTab extends Component {
             let result = await this.dataRepository.fetchRepository(url)
             this.items = result && result.items ? result.items : result ? result : []
             this.getFavoriteKeys()
-            if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
+            if (!this.items || result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
                 this.items = await this.dataRepository.fetchNetRepository(url)
                 this.getFavoriteKeys()
             }

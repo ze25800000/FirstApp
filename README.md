@@ -709,3 +709,4 @@ renderRow(projectModel) {
 # 7-3 Favorite(收藏)模块的收藏状态数据DAO层设计
 # 7-4 Favarite(收藏)模块的数据收藏状态实时更新
 # 7-5 为Trending(趋势)模块的列表页添加收藏功能
+# 7-6 为Popular(最热)与Trending(趋势)模块的详情页添加收藏的功能

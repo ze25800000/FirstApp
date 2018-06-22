@@ -214,7 +214,7 @@ class TrendingTab extends Component {
             let result = await dataRepository.fetchRepository(url)
             this.items = result && result.items ? result.items : result ? result : []
             this.getFavoriteKeys()
-            if (result && result.update_date && !dataRepository.checkDate(result.update_date)) {
+            if (!this.items || result && result.update_date && !dataRepository.checkDate(result.update_date)) {
                 this.items = await dataRepository.fetchNetRepository(url)
                 this.getFavoriteKeys()
             }
