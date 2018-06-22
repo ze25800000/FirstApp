@@ -57,4 +57,30 @@ export default class FavoriteDao {
             }
         })
     }
+
+    getAllItems() {
+        return new Promise((resolve, reject) => {
+            this.getFavoriteKeys().then(keys => {
+                let items = []
+                if (keys) {
+                    AsyncStorage.multiGet(keys, (error, stores) => {
+                        try {
+                            stores.map((result, i, store) => {
+                                let value = store[i][0]
+                                if (value) items.push(value)
+                            })
+                            resolve(items)
+                        } catch (e) {
+                            reject(e)
+                        }
+                    })
+                } else {
+                    resolve(items)
+                }
+            })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    }
 }

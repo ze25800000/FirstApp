@@ -710,3 +710,34 @@ renderRow(projectModel) {
 # 7-4 Favarite(收藏)模块的数据收藏状态实时更新
 # 7-5 为Trending(趋势)模块的列表页添加收藏功能
 # 7-6 为Popular(最热)与Trending(趋势)模块的详情页添加收藏的功能
+# 7-7 Favorite(收藏)模块列表页面基本实现与用户所收藏的项目数据获取
+- AsyncStorage.multiGet获取所有本地存储数据
+
+```
+getAllItems() {
+    return new Promise((resolve, reject) => {
+        this.getFavoriteKeys().then(keys => {
+            let items = []
+            if (keys) {
+                AsyncStorage.multiGet(keys, (error, stores) => {
+                    try {
+                        stores.map((result, i, store) => {
+                            let value = store[i][0]
+                            if (value) items.push(value)
+                        })
+                        resolve(items)
+                    } catch (e) {
+                        reject(e)
+                    }
+                })
+            } else {
+                resolve(items)
+            }
+        })
+            .catch(error => {
+                reject(error)
+            })
+    })
+}
+
+```
