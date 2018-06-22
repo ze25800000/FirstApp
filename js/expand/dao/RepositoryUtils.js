@@ -15,6 +15,7 @@ export default class RepositoryUtils {
         for (let value of itemMap.values()) {
             arr.push(value)
         }
+        this.aboutCommon.onNotifyDataChanged(arr)
     }
 
     async fetchRepository(url) {

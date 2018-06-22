@@ -756,3 +756,16 @@ getAllItems() {
 # 8-7 My(我的)模块意见反馈，项目官网展示功能实现
 # 8-8 My(我的)模块项目介绍数据请求工具开发（RepositoryUtil）-1
 # 8-9 My(我的)模块项目介绍数据请求工具开发（RepositoryUtil）-2
+- Map的使用
+```
+let itemMap = new Map()
+
+updateData(k, v) {
+    itemMap.set(k, v)
+    let arr = []
+    for (let value of itemMap.values()) {
+        arr.push(value)
+    }
+}
+```
+# 8-10 My(我的)模块项目介绍数据展示-1

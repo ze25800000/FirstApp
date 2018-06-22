@@ -39,7 +39,24 @@ export default class DataRepository {
     fetchNetRepository(url) {
 
         return new Promise((resolve, reject) => {
-            if (this.flag === FLAG_STORAGE.flag_trending) {
+            if (this.flag !== FLAG_STORAGE.flag_trending) {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (this.flag === FLAG_STORAGE.flag_my && result) {
+                            this.saveRepository(url, result.items)
+                            resolve(result)
+                        } else if (result && result.items) {
+                            this.saveRepository(url, result.items)
+                            resolve(result.items)
+                        } else {
+                            reject(new Error('responseData is null'))
+                        }
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            } else {
                 this.trending.fetchTrending(url)
                     .then(result => {
                         if (!result) {
@@ -49,30 +66,23 @@ export default class DataRepository {
                         this.saveRepository(url, result)
                         resolve(result)
                     })
-            } else {
-                fetch(url)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (!result) {
-                            reject(new Error('responseData is null'))
-                            return
-                        }
-                        DeviceEventEmitter.emit('showToast', '显示网络数据')
-                        resolve(result.items)
-                        this.saveRepository(url, result.items)
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
             }
         })
     }
 
     saveRepository(url, items, callback) {
         if (!url || !items) return
-        let wrapData = {
-            items: items,
-            update_data: new Date().getTime()
+        let wrapData
+        if (this.flag === FLAG_STORAGE.flag_my) {
+            wrapData = {
+                item: items,
+                update_data: new Date().getTime()
+            }
+        } else {
+            wrapData = {
+                items: items,
+                update_data: new Date().getTime()
+            }
         }
         AsyncStorage.setItem(url, JSON.stringify(wrapData), callback)
     }

@@ -20,11 +20,19 @@ import SortKeyPage from '../my/SortKeyPage'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon'
 import WebViewPage from '../WebViewPage'
+import config from '../../../res/data/config'
 
 export default class AboutPage extends Component {
     constructor(props) {
         super(props);
-        this.aboutCommon = new AboutCommon(props, (dic) => this.updateState(dic), FLAG_ABOUT.flag_about)
+        this.aboutCommon = new AboutCommon(props, (dic) => this.updateState(dic), FLAG_ABOUT.flag_about, config)
+        this.state = {
+            projectModel: []
+        }
+    }
+
+    componentDidMount() {
+        this.aboutCommon.componentDidMount()
     }
 
     updateState(dic) {
@@ -63,6 +71,7 @@ export default class AboutPage extends Component {
 
     render() {
         let content = <View>
+            {this.aboutCommon.renderRpository(this.state.projectModel)}
             {ViewUtils.getSettingItem(() => this.onClick(MORE_MENU.WebSite), require('../../../res/images/ic_computer.png'), MORE_MENU.WebSite, {tintColor: '#2196F3'})}
             <View style={GlobalStyles.line}/>
             {ViewUtils.getSettingItem(() => this.onClick(MORE_MENU.About_Author), require('../my/images/ic_insert_emoticon.png'), MORE_MENU.About_Author, {tintColor: '#2196F3'})}

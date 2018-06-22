@@ -19,18 +19,34 @@ import Utils from '../../common/util/Utils'
 import ProjectModel from '../../model/ProjectModel'
 import RepositoryCell from '../../common/RepositoryCell'
 import RepositoryDetail from '../RepositoryDetail'
+import RepositoryUtils from '../../expand/dao/RepositoryUtils'
 
 let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 
 export let FLAG_ABOUT = {flag_about: 'about', flag_about_me: 'about_me'}
 export default class AboutCommon {
-    constructor(props, updateState, flag_about) {
+    constructor(props, updateState, flag_about, config) {
         this.props = props
         this.updateState = updateState
         this.flag_about = flag_about
+        this.config = config
         this.repositories = []
         this.favoriteKeys = null
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+        this.repositoryUtils = new RepositoryUtils(this)
+    }
+
+    componentDidMount() {
+        if (this.flag_about === FLAG_ABOUT.flag_about) {
+            this.repositoryUtils.fetchRepository(this.config.info.currentRepoUrl)
+        } else {
+            let urls = []
+            let items = this.config.items
+            for (let i = 0, l = items.length; i < l; i++) {
+                urls.push(this.config.info.url + items[i])
+            }
+            this.repositoryUtils.fetchRepositories(urls)
+        }
     }
 
     onNotifyDataChanged(items) {
@@ -93,6 +109,7 @@ export default class AboutCommon {
                 />
             )
         }
+        return views
     }
 
     getParallaxRenderConfig(params) {
