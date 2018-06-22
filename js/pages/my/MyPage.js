@@ -15,6 +15,7 @@ import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import {MORE_MENU, MoreMenu} from '../../common/MoreMenu'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import ViewUtils from '../../common/util/ViewUtils'
+import AboutPage from '../about/AboutPage'
 
 export default class MyPage extends Component {
     onClick(tab) {
@@ -74,7 +75,7 @@ export default class MyPage extends Component {
             {navigationBar}
             <ScrollView>
                 <TouchableHighlight
-                    onPress={() => this.onClick(MoreMenu.About)}
+                    onPress={() => this.onClick(MORE_MENU.About)}
                 >
                     <View style={[styles.item, {height: 90}]}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>

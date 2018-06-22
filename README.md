@@ -746,3 +746,8 @@ getAllItems() {
 # 8-1 My(我的)模块分组列表页面实现-1
 # 8-2 My(我的)模块分组列表页面实现-2
 # 8-3 My(我的)模块分组列表页面实现-3
+# 8-4 My(我的)模块项目介绍页面简单实现（parallar-scroll-view）-1
+- 安装react-native-parallax-scroll-view，0.19.0版本，其他版本报错
+```
+ "react-native-parallax-scroll-view": "^0.19.0",
+```
