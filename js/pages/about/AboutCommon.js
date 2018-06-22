@@ -63,8 +63,9 @@ export default class AboutCommon {
         let items = this.repositories
         for (let i = 0, len = items.length; i < len; i++) {
             let data = items[i]
+            data = data.item ? data.item : data
             projectModels.push({
-                isFavorite: Utils.checkFavorite(this.repositories[i], this.favoriteKeys ? this.favoriteKeys : []),
+                isFavorite: Utils.checkFavorite(data, this.favoriteKeys ? this.favoriteKeys : []),
                 item: data.item ? data.item : data
             })
         }
@@ -89,9 +90,9 @@ export default class AboutCommon {
 
     onFavorite(item, isFavorite) {
         if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
+            this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
         } else {
-            favoriteDao.removeFavoriteItem(item.id.toString())
+            this.favoriteDao.removeFavoriteItem(item.id.toString())
         }
     }
 
