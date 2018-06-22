@@ -5,5 +5,6 @@ export const MORE_MENU = {
     Sort_Key: 'Sort Key',
     Remove_Key: 'Remove Key',
     About_Author: 'About Author',
-    About: 'About'
+    About: 'About',
+    Custom_Theme: 'Custom Theme'
 }
