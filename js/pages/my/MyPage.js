@@ -12,11 +12,17 @@ import CustomKeyPage from './CustomKeyPage'
 import SortKeyPage from './SortKeyPage'
 import NavigationBar from '../../common/NavigationBar'
 import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
-import {MoreMenu} from '../../common/MoreMenu'
+import {MORE_MENU, MoreMenu} from '../../common/MoreMenu'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
+import ViewUtils from '../../common/util/ViewUtils'
 
 export default class MyPage extends Component {
     onClick() {
+
+    }
+
+    getItem(tag, icon, text) {
+        return ViewUtils.getSettingItem(() => this.onClick(tag), icon, text, {tintColor: '#2196F3'}, null)
 
     }
 
@@ -27,7 +33,7 @@ export default class MyPage extends Component {
                 backgroundColor: '#2196F3'
             }}
         />
-        return <View style={styles.container}>
+        return <View style={GlobalStyles.root_container}>
             {navigationBar}
             <ScrollView>
                 <TouchableHighlight
@@ -49,7 +55,12 @@ export default class MyPage extends Component {
                             source={require('../../../res/images/ic_tiaozhuan.png')}/>
                     </View>
                 </TouchableHighlight>
-                <View style={GlobalStyles.line}></View>
+                <View style={GlobalStyles.line}/>
+                {/*趋势管理*/}
+                <Text style={styles.groupTitle}>趋势管理</Text>
+                <View style={GlobalStyles.line}/>
+                {this.getItem(MORE_MENU.Custom_Key, require('./images/ic_custom_language.png'), '趋势管理')}
+                <View style={GlobalStyles.line}/>
             </ScrollView>
             <Text
                 style={styles.tips}
@@ -124,6 +135,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
+        backgroundColor: 'white',
         height: 60
+    },
+    groupTitle: {
+        marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 5,
+        fontSize: 12,
+        color: 'gray'
     }
 })

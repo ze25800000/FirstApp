@@ -5,10 +5,37 @@ import {
     Text,
     View,
     TouchableOpacity,
+    TouchableHighlight,
     Image
 } from 'react-native'
 
 export default class ViewUtils {
+    static getSettingItem(callBack, icon, text, tintStyle, expandableIco) {
+        return (
+            <TouchableHighlight
+                onPress={callBack}
+            >
+                <View style={styles.item}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Image
+                            resizeMode={'stretch'}
+                            style={[{width: 16, height: 16, marginRight: 10}, tintStyle]}
+                            source={icon}/>
+                        <Text>{text}</Text>
+                    </View>
+                    <Image
+                        style={[{
+                            marginRight: 10,
+                            height: 22,
+                            width: 22
+                        }, {tintColor: '#2196f3'}]}
+                        source={expandableIco ? expandableIco : require('../../../res/images/ic_tiaozhuan.png')}/>
+                </View>
+            </TouchableHighlight>
+        )
+
+    }
+
     static getLeftButton(callback) {
         return <TouchableOpacity
             style={{padding: 8}}
@@ -33,9 +60,21 @@ export default class ViewUtils {
     }
 }
 
+
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     title: {
         color: 'white',
         fontSize: 20
+    },
+    item: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        height: 60,
+        backgroundColor: 'white'
     }
 })
