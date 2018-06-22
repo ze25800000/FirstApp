@@ -1,7 +1,7 @@
 import {AsyncStorage, DeviceEventEmitter} from 'react-native'
 import GitHubTrending from 'GitHubTrending'
 
-export let FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'}
+export let FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending', flag_my: 'my'}
 export default class DataRepository {
     constructor(flag) {
         this.flag = flag
