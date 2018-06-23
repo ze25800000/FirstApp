@@ -14,9 +14,7 @@ import {
 } from 'react-native'
 import ViewUtils from '../../common/util/ViewUtils'
 import {MORE_MENU} from '../../common/MoreMenu'
-import CustomKeyPage from '../my/CustomKeyPage'
-import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
-import SortKeyPage from '../my/SortKeyPage'
+import AboutMePage from './AboutMePage'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import AboutCommon, {FLAG_ABOUT} from './AboutCommon'
 import WebViewPage from '../WebViewPage'
@@ -43,6 +41,7 @@ export default class AboutPage extends Component {
         let TargetComponent, params = {...this.props, menuType: tab}
         switch (tab) {
             case MORE_MENU.About_Author:
+                TargetComponent = AboutMePage
                 break;
             case MORE_MENU.WebSite:
                 TargetComponent = WebViewPage

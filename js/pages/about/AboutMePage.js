@@ -111,7 +111,7 @@ export default class AboutMePage extends Component {
                 params.url=url;
                 break;
             case FLAG.CONTACT.items.Email:
-                var url='mailto://'+tab.account;
+                var url='mailto:'+tab.account;
                 Linking.canOpenURL(url).then(supported => {
                     if (!supported) {
                         console.log('Can\'t handle url: ' + url);

@@ -2,17 +2,17 @@ import {AsyncStorage} from 'react-native'
 import DataRepository, {FLAG_STORAGE} from './DataRepository'
 import Utils from '../../common/util/Utils'
 
-let itemMap = new Map()
 export default class RepositoryUtils {
     constructor(aboutCommon) {
         this.aboutCommon = aboutCommon
+        this.itemMap = new Map()
         this.DataRepository = new DataRepository(FLAG_STORAGE.flag_my)
     }
 
     updateData(k, v) {
-        itemMap.set(k, v)
+        this.itemMap.set(k, v)
         let arr = []
-        for (let value of itemMap.values()) {
+        for (let value of this.itemMap.values()) {
             arr.push(value)
         }
         this.aboutCommon.onNotifyDataChanged(arr)

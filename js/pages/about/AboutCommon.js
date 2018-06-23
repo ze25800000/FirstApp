@@ -16,7 +16,6 @@ import ViewUtils from '../../common/util/ViewUtils'
 import FavoriteDao from '../../expand/dao/FavoriteDao'
 import {FLAG_STORAGE} from '../../expand/dao/DataRepository'
 import Utils from '../../common/util/Utils'
-import ProjectModel from '../../model/ProjectModel'
 import RepositoryCell from '../../common/RepositoryCell'
 import RepositoryDetail from '../RepositoryDetail'
 import RepositoryUtils from '../../expand/dao/RepositoryUtils'
@@ -104,7 +103,7 @@ export default class AboutCommon {
             views.push(
                 <RepositoryCell
                     onSelect={() => this.onSelect(projectModel)}
-                    key={projectModel.item.id}
+                    key={i}
                     projectModel={projectModel}
                     onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
                 />
