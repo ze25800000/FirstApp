@@ -96,7 +96,7 @@ export default class AboutCommon {
         }
     }
 
-    renderRpository(projectModels) {
+    renderRepository(projectModels) {
         if (!projectModels || projectModels.length === 0) return null
         let views = []
         for (let i = 0, l = projectModels.length; i < l; i++) {

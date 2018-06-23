@@ -16,6 +16,7 @@ import {MORE_MENU, MoreMenu} from '../../common/MoreMenu'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import ViewUtils from '../../common/util/ViewUtils'
 import AboutPage from '../about/AboutPage'
+import AboutMePage from '../about/AboutMePage'
 
 export default class MyPage extends Component {
     onClick(tab) {
