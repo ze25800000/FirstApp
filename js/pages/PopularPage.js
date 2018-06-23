@@ -4,9 +4,11 @@ import {
     Navigator,
     Text,
     View,
+    Image,
     ListView,
     RefreshControl,
     DeviceEventEmitter,
+    TouchableOpacity,
     TextInput
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
@@ -18,6 +20,7 @@ import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import Utils from '../common/util/Utils'
+import SearchPage from './SearchPage'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -47,7 +50,37 @@ export default class PopularPage extends Component {
         }
     }
 
+    renderLeftButton() {
+        return <View>
+            <TouchableOpacity
+                onPress={() => {
+                    this.props.navigator.push({
+                        component: SearchPage,
+                        params: {
+                            ...this.props
+                        }
+                    })
+                }}
+            >
+                <View style={{padding: 5, marginLeft: 8}}>
+                    <Image
+                        style={{height: 24, width: 24}}
+                        source={require('../../res/images/ic_search_white_48pt.png')}
+                    />
+                </View>
+            </TouchableOpacity>
+        </View>
+    }
+
     render() {
+        let navigationBar =
+            <NavigationBar
+                title={'最热'}
+                leftButton={this.renderLeftButton()}
+                statusBar={{
+                    backgroundColor: '#2196F3'
+                }}
+            />
         let content = this.state.language.length > 0 ?
             <ScrollableTabView
                 tabBarBackgroundColor={'#2196F3'}
@@ -63,12 +96,7 @@ export default class PopularPage extends Component {
                 })}
             </ScrollableTabView> : null
         return <View style={styles.container}>
-            <NavigationBar
-                title={'最热'}
-                statusBar={{
-                    backgroundColor: '#2196F3'
-                }}
-            />
+            {navigationBar}
             {content}
         </View>
     }
