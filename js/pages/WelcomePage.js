@@ -8,14 +8,21 @@ import {
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
 import HomePage from './HomePage'
+import ThemeDao from '../expand/dao/ThemeDao'
 
 export default class WelcomePage extends Component {
     componentDidMount() {
+        new ThemeDao().getTheme().then(data => {
+            this.theme = data
+        })
         this.timer = setTimeout(() => {
             this.props.navigator.resetTo({
-                component: HomePage
+                component: HomePage,
+                params: {
+                    theme: this.theme
+                }
             })
-        }, 100)
+        }, 500)
     }
 
     componentWillUnmount() {

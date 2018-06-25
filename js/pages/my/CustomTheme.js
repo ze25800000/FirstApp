@@ -10,10 +10,17 @@ import {
 } from 'react-native'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
 import {ThemeFlags} from '../../../res/styles/ThemeFactory'
+import ThemeDao from '../../expand/dao/ThemeDao'
 
 export default class CustomTheme extends Component {
+    constructor(props) {
+        super(props)
+        this.themeDao = new ThemeDao()
+    }
+
     onSelectTheme(themeKey) {
         this.props.onClose()
+        this.themeDao.save(ThemeFlags[themeKey])
     }
 
     getThemeItem(themeKey) {
