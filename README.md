@@ -847,3 +847,7 @@ this.cancelable && this.cancelable.cancel()
 # 10-1 可配置菜单的实现-1
 # 10-2 可配置菜单的实现-2
 # 10-3 可配置菜单的实现-3
+# 10-4 ReactNative版本升级踩坑（0.39-to-0.40）
+[React-Native升级指南-v0.40+升级适配经验与心得](http://www.devio.org/2017/01/17/React-Native%E5%8D%87%E7%BA%A7%E6%8C%87%E5%8D%97-v0.40+%E5%8D%87%E7%BA%A7%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E4%B8%8E%E5%BF%83%E5%BE%97/)
+# 11-1 构建自定义多彩主题页面
+- [Modal](https://facebook.github.io/react-native/docs/modal.html#docsNav)
