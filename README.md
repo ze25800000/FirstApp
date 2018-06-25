@@ -792,3 +792,55 @@ const {height, width} = Dimensions.get('window')
 ```
 # 9-6 为Search（搜索）模块添加进度条与底部按钮-2
 # 9-7 添加返回首页数据刷新功能
+# 9-8 为Promise插上翅膀之可取消的异步任务
+- 封装promise
+```
+export default function makeCancelable(promise) {
+    let hasCanceled_ = false
+    const wrappedPromise = new Promise((reolve, reject) => {
+        promise.then((val) =>
+            hasCanceled_ ? reject({isCanceled: true}) : reolve(val)
+        )
+        promise.catch(error =>
+            hasCanceled_ ? reject({isCanceled: true}) : reject(error)
+        )
+    })
+    return {
+        promise: wrappedPromise,
+        cancel() {
+            hasCanceled_ = true
+        }
+    }
+}
+```
+- 调用这个promise
+```
+this.cancelable = makeCancelable(fetch(this.genFetchUrl(this.inputKey)))
+this.cancelable.promise
+    .then(response => response.json())
+    .then(responseDate => {
+        if (!this || !responseDate || !responseDate.items || responseDate.items.length === 0) {
+            this.toast.show(this.inputKey + '没有结果', DURATION.LENGTH_LONG)
+            this.updateState({isLoading: false, rightButton: '搜索'})
+            return
+        }
+        this.items = responseDate.items
+        this.getFavoriteKeys()
+        if (!this.checkKeyIsExist(this.keys, this.inputKey)) {
+            this.updateState({showBottomButton: true})
+        } else {
+            this.updateState({showBottomButton: false})
+        }
+    }).catch(e => {
+    this.updateState({
+        isLoading: false,
+        rightButtonText: '搜索'
+    })
+})
+
+```
+- 点击取消
+```
+this.cancelable && this.cancelable.cancel()
+
+```

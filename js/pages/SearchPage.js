@@ -23,6 +23,7 @@ import FavoriteDao from '../expand/dao/FavoriteDao'
 import ActionUtils from '../util/ActionUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import {ACTION_HOME} from './HomePage'
+import makeCancelable from '../util/Cancelable'
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -86,7 +87,8 @@ export default class PopularPage extends Component {
         this.updateState({
             isLoading: true
         })
-        fetch(this.genFetchUrl(this.inputKey))
+        this.cancelable = makeCancelable(fetch(this.genFetchUrl(this.inputKey)))
+        this.cancelable.promise
             .then(response => response.json())
             .then(responseDate => {
                 if (!this || !responseDate || !responseDate.items || responseDate.items.length === 0) {
@@ -160,6 +162,7 @@ export default class PopularPage extends Component {
                 rightButtonText: '搜索',
                 isLoading: false
             })
+            this.cancelable && this.cancelable.cancel()
         }
     }
 
