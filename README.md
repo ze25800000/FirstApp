@@ -791,3 +791,4 @@ let indicatorView = this.state.isLoading ?
 const {height, width} = Dimensions.get('window')
 ```
 # 9-6 为Search（搜索）模块添加进度条与底部按钮-2
+# 9-7 添加返回首页数据刷新功能

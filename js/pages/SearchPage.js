@@ -22,6 +22,7 @@ import {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import ActionUtils from '../util/ActionUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
+import {ACTION_HOME} from './HomePage'
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -30,6 +31,7 @@ export default class PopularPage extends Component {
         super(props)
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.isKeyChanged = false
         this.keys = []
         this.favoritKeys = []
         this.state = {
@@ -46,6 +48,12 @@ export default class PopularPage extends Component {
         this.initKeys()
     }
 
+    componentWillUnmount() {
+        if (this.isKeyChanged) {
+            DeviceEventEmitter.emit('ACTION_HOME', ACTION_HOME.A_RESTART)
+        }
+    }
+
     saveKey() {
         let key = this.inputKey
         if (this.checkKeyIsExist(this.keys, key)) {
@@ -59,6 +67,7 @@ export default class PopularPage extends Component {
             this.keys.unshift(key)
             this.languageDao.save(this.keys)
             this.toast.show(key.name + '保存成功', DURATION.LENGTH_LONG)
+            this.isKeyChanged = true
         }
     }
 
