@@ -4,6 +4,7 @@ import {
     Navigator,
     Text,
     View,
+    DeviceEventEmitter,
     TouchableHighlight,
     TouchableOpacity,
     Alert,
@@ -14,6 +15,7 @@ import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import ArrayUtils from '../../util/ArrayUtils'
 import SortableListView from 'react-native-sortable-listview'
 import ViewUtils from '../../util/ViewUtils'
+import {ACTION_HOME, FLAG_TAB} from '../HomePage'
 
 export default class MyPage extends Component {
     constructor(props) {
@@ -60,7 +62,8 @@ export default class MyPage extends Component {
         }
         this.getSortResult()
         this.languageDao.save(this.sortResultArray)
-        this.props.navigator.pop()
+        let jumpToTab = this.props.flag === FLAG_LANGUAGE.flag_key ? FLAG_TAB.flag_popularTab : FLAG_TAB.flag_trendingTab
+        DeviceEventEmitter.emit('ACTION_HOME', ACTION_HOME.A_RESTART, jumpToTab)
     }
 
     onBack() {

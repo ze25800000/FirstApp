@@ -136,7 +136,6 @@ export default class MoreMenu extends Component {
                 >
                     <Text
                         underlayColor={'transparent'}
-                        onPress={() => this.onSelectTimeSpan(arr[i])}
                         style={{fontSize: 18, padding: 8, color: 'white', fontWeight: '400'}}
                     >{arr[i]}</Text>
                 </TouchableOpacity>

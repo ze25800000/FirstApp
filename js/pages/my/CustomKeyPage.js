@@ -4,6 +4,7 @@ import {
     Navigator,
     Text,
     TouchableOpacity,
+    DeviceEventEmitter,
     View,
     ScrollView,
     Alert,
@@ -14,6 +15,7 @@ import ViewUtils from '../../util/ViewUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import CheckBox from 'react-native-check-box'
 import ArrayUtils from '../../util/ArrayUtils'
+import {ACTION_HOME, FLAG_TAB} from '../HomePage'
 
 export default class CustomKeyPage extends Component {
     constructor(props) {
@@ -36,7 +38,8 @@ export default class CustomKeyPage extends Component {
             }
         }
         this.languageDao.save(this.state.dataArray)
-        this.props.navigator.pop()
+        let jumpToTab = this.props.flag === FLAG_LANGUAGE.flag_key ? FLAG_TAB.flag_popularTab : FLAG_TAB.flag_trendingTab
+        DeviceEventEmitter.emit('ACTION_HOME', ACTION_HOME.A_RESTART, jumpToTab)
     }
 
     onBack() {
