@@ -59,6 +59,22 @@ export default class ViewUtils {
             </View>
         </TouchableOpacity>
     }
+
+    static getMoreButton(callback) {
+        return <TouchableHighlight
+            underlayColor={'transparent'}
+            ref={"moreMenuButton"}
+            style={{padding: 5}}
+            onPress={callback}
+        >
+            <View style={{paddingRight: 8}}>
+                <Image
+                    style={{width: 24, height: 24}}
+                    source={require('../../res/images/ic_more_vert_white_48pt.png')}
+                />
+            </View>
+        </TouchableHighlight>
+    }
 }
 
 

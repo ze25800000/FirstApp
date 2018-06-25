@@ -22,6 +22,9 @@ import FavoriteDao from '../expand/dao/FavoriteDao'
 import Utils from '../util/Utils'
 import SearchPage from './SearchPage'
 import ActionUtils from '../util/ActionUtils'
+import ViewUtils from '../util/ViewUtils'
+import MoreMenu, {MORE_MENU} from '../common/MoreMenu'
+import {FLAG_TAB} from './HomePage'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -51,8 +54,8 @@ export default class PopularPage extends Component {
         }
     }
 
-    renderLeftButton() {
-        return <View>
+    renderRightButton() {
+        return <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
                 onPress={() => {
                     this.props.navigator.push({
@@ -63,21 +66,32 @@ export default class PopularPage extends Component {
                     })
                 }}
             >
-                <View style={{padding: 5, marginLeft: 8}}>
+                <View style={{padding: 5, marginRight: 8}}>
                     <Image
                         style={{height: 24, width: 24}}
                         source={require('../../res/images/ic_search_white_48pt.png')}
                     />
                 </View>
             </TouchableOpacity>
+            {ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
         </View>
+    }
+
+    renderMoreView() {
+        let params = {...this.props, fromPage: FLAG_TAB.flag_popularTab}
+        return <MoreMenu
+            ref={'moreMenu'}
+            {...params}
+            menus={[MORE_MENU.Custom_Key, MORE_MENU.Sort_Key, MORE_MENU.Remove_Key, MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
+            anchorView={() => this.refs.moreMenuButton}
+        />
     }
 
     render() {
         let navigationBar =
             <NavigationBar
                 title={'最热'}
-                leftButton={this.renderLeftButton()}
+                rightButton={this.renderRightButton()}
                 statusBar={{
                     backgroundColor: '#2196F3'
                 }}
@@ -99,6 +113,7 @@ export default class PopularPage extends Component {
         return <View style={styles.container}>
             {navigationBar}
             {content}
+            {this.renderMoreView()}
         </View>
     }
 }

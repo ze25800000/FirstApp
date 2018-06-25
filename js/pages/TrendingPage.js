@@ -16,14 +16,12 @@ import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import TrendingCell from '../common/TrendingCell'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
-import RepositoryDetail from './RepositoryDetail'
 import TimeSpan from '../model/TimeSpan'
 import Popover from '../common/Popover'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import Utils from '../util/Utils'
 import ActionUtils from '../util/ActionUtils'
-import ArrayUtils from '../util/ArrayUtils'
 
 let timeSpanTextArray = [
     new TimeSpan('今 天', 'since=daily'),

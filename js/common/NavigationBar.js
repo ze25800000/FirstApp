@@ -1,65 +1,79 @@
-import React, {Component, PropTypes} from 'react'
+/**
+ * NavigationBar
+ * @flow
+ */
+import React, {Component, PropTypes} from 'react';
+
 import {
-    View,
-    Text,
+    StyleSheet,
+    Platform,
+    TouchableOpacity,
     Image,
     StatusBar,
-    Platform,
-    StyleSheet
+    Text,
+    View
 } from 'react-native'
-
-const NAV_BAR_HEIGHT_ANDROID = 55
-const NAV_BAR_HEIGHT_IOS = 44
-const STATUS_BAR_HEIGHT = 20
+const NAV_BAR_HEIGHT_IOS = 44;
+const NAV_BAR_HEIGHT_ANDROID = 50;
+const STATUS_BAR_HEIGHT = 20;
 const StatusBarShape = {
+    barStyle: PropTypes.oneOf(['light-content', 'default',]),
+    hidden: PropTypes.bool,
     backgroundColor: PropTypes.string,
-    barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
-    hidden: PropTypes.bool
-}
+};
 export default class NavigationBar extends Component {
     static propTypes = {
         style: View.propTypes.style,
         title: PropTypes.string,
         titleView: PropTypes.element,
         hide: PropTypes.bool,
+        statusBar: PropTypes.shape(StatusBarShape),
+        rightButton:  PropTypes.element,
         leftButton: PropTypes.element,
-        rightButton: PropTypes.element,
-        statusBar: PropTypes.shape(StatusBarShape)
+
     }
     static defaultProps = {
         statusBar: {
             barStyle: 'light-content',
-            hidden: false
-        }
+            hidden: false,
+        },
     }
-
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             title: '',
             hide: false
-        }
+        };
+    }
+
+    getButtonElement(data) {
+        return (
+            <View style={styles.navBarButton}>
+                {data? data : null}
+            </View>
+        );
     }
 
     render() {
-        let status = <View style={styles.statusBar}>
-            <StatusBar {...this.props.statusBar}/>
-        </View>
+        let statusBar = !this.props.statusBar.hidden ?
+            <View style={styles.statusBar}>
+                <StatusBar {...this.props.statusBar} />
+            </View>: null;
 
         let titleView = this.props.titleView ? this.props.titleView :
-            <Text style={styles.title}>{this.props.title}</Text>
+            <Text style={styles.title}>{this.props.title}</Text>;
 
-        let content = <View style={styles.navBar}>
-            {this.props.leftButton}
-            <View style={styles.titleViewContainer}>
-                {titleView}
-            </View>
-            {this.props.rightButton}
-        </View>
-
+        let content = this.props.hide ? null :
+            <View style={styles.navBar}>
+                {this.getButtonElement(this.props.leftButton)}
+                <View style={styles.navBarTitleContainer}>
+                    {titleView}
+                </View>
+                {this.getButtonElement(this.props.rightButton)}
+            </View>;
         return (
             <View style={[styles.container, this.props.style]}>
-                {status}
+                {statusBar}
                 {content}
             </View>
         )
@@ -68,28 +82,32 @@ export default class NavigationBar extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#2196F3'
+        backgroundColor: '#2196F3',
     },
     navBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        alignItems: 'center',
         height: Platform.OS === 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID,
-        flexDirection: 'row'
     },
-    titleViewContainer: {
-        justifyContent: 'center',
+    navBarTitleContainer: {
         alignItems: 'center',
+        justifyContent: 'center',
         position: 'absolute',
         left: 40,
-        right: 40,
         top: 0,
-        bottom: 0
+        right: 40,
+        bottom: 0,
     },
     title: {
         fontSize: 20,
-        color: '#fff'
+        color: '#FFFFFF',
+    },
+    navBarButton: {
+        alignItems: 'center',
     },
     statusBar: {
-        height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 0
-    }
+        height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT:0,
+
+    },
 })
