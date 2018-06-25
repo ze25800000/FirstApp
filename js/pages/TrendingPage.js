@@ -22,6 +22,10 @@ import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import Utils from '../util/Utils'
 import ActionUtils from '../util/ActionUtils'
+import {FLAG_TAB} from './HomePage'
+import {MORE_MENU} from '../common/MoreMenu'
+import MoreMenu from '../common/MoreMenu'
+import ViewUtils from '../util/ViewUtils'
 
 let timeSpanTextArray = [
     new TimeSpan('今 天', 'since=daily'),
@@ -55,6 +59,16 @@ export default class TrendingPage extends Component {
         } catch (e) {
             console.log(e)
         }
+    }
+
+    renderMoreView() {
+        let params = {...this.props, fromPage: FLAG_TAB.flag_popularTab}
+        return <MoreMenu
+            ref={'moreMenu'}
+            {...params}
+            menus={[MORE_MENU.Custom_Language, MORE_MENU.Sort_Language, MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
+            anchorView={() => this.refs.moreMenuButton}
+        />
     }
 
     showPopover() {
@@ -104,6 +118,7 @@ export default class TrendingPage extends Component {
         let navigationBar =
             <NavigationBar
                 titleView={this.renderTitleView()}
+                rightButton={ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
                 statusBar={{
                     backgroundColor: '#2196F3'
                 }}
@@ -151,6 +166,7 @@ export default class TrendingPage extends Component {
             {navigationBar}
             {content}
             {timeSpanView}
+            {this.renderMoreView()}
         </View>
     }
 }

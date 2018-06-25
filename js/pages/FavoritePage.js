@@ -19,16 +19,31 @@ import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import ArrayUtils from '../util/ArrayUtils'
 import ActionUtils from '../util/ActionUtils'
+import {FLAG_TAB} from './HomePage'
+import {MORE_MENU} from '../common/MoreMenu'
+import MoreMenu from '../common/MoreMenu'
+import ViewUtils from '../util/ViewUtils'
 
 export default class FavoritePage extends Component {
     constructor(props) {
         super(props)
     }
 
+    renderMoreView() {
+        let params = {...this.props, fromPage: FLAG_TAB.flag_popularTab}
+        return <MoreMenu
+            ref={'moreMenu'}
+            {...params}
+            menus={[MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
+            anchorView={() => this.refs.moreMenuButton}
+        />
+    }
+
     render() {
         let Navigation =
             <NavigationBar
                 title={'收藏'}
+                rightButton={ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
                 statusBar={{
                     backgroundColor: '#2196F3'
                 }}
@@ -48,6 +63,7 @@ export default class FavoritePage extends Component {
         return <View style={styles.container}>
             {Navigation}
             {content}
+            {this.renderMoreView()}
         </View>
     }
 }
