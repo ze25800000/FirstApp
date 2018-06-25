@@ -35,7 +35,7 @@ export default class PopularPage extends Component {
         this.state = {
             rightButtonText: '搜索',
             isLoading: false,
-            showBottomButton: true,
+            showBottomButton: false,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => r1 !== r2
             })
@@ -46,8 +46,31 @@ export default class PopularPage extends Component {
         this.initKeys()
     }
 
+    saveKey() {
+        let key = this.inputKey
+        if (this.checkKeyIsExist(this.keys, key)) {
+            this.toast.show(key + '已经存在', DURATION.LENGTH_LONG)
+        } else {
+            key = {
+                "path": key,
+                "name": key,
+                "checked": true
+            }
+            this.keys.unshift(key)
+            this.languageDao.save(this.keys)
+            this.toast.show(key.name + '保存成功', DURATION.LENGTH_LONG)
+        }
+    }
+
     async initKeys() {
         this.keys = await this.languageDao.fetch()
+    }
+
+    checkKeyIsExist(keys, key) {
+        for (let i = 0, len = keys.length; i < len; i++) {
+            if (key.toLowerCase() === keys[i].name.toLowerCase()) return true
+        }
+        return false
     }
 
     loadData() {
@@ -64,7 +87,11 @@ export default class PopularPage extends Component {
                 }
                 this.items = responseDate.items
                 this.getFavoriteKeys()
-
+                if (!this.checkKeyIsExist(this.keys, this.inputKey)) {
+                    this.updateState({showBottomButton: true})
+                } else {
+                    this.updateState({showBottomButton: false})
+                }
             }).catch(e => {
             this.updateState({
                 isLoading: false,
@@ -199,8 +226,11 @@ export default class PopularPage extends Component {
                 {indicatorView}
                 {listView}
             </View>
-        let bottomButton = !this.state.showBottomButton ?
+        let bottomButton = this.state.showBottomButton ?
             <TouchableOpacity
+                onPress={() => {
+                    this.saveKey()
+                }}
                 style={[styles.bottomButton, {backgroundColor: '#2196F3'}]}
             >
                 <View style={{justifyContent: 'center'}}>
