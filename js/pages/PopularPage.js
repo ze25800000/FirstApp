@@ -19,8 +19,9 @@ import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-import Utils from '../common/util/Utils'
+import Utils from '../util/Utils'
 import SearchPage from './SearchPage'
+import ActionUtils from '../util/ActionUtils'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -184,35 +185,17 @@ class PopularTab extends Component {
         }
     }
 
-    onSelect(projectModel) {
-        let item = projectModel.item
-        this.props.navigator.push({
-            title: item.full_name,
-            component: RepositoryDetail,
-            params: {
+    renderRow(projectModel) {
+        return <RepositoryCell
+            onSelect={() => ActionUtils.onSelectRepository({
                 flag: FLAG_STORAGE.flag_popular,
                 projectModel: projectModel,
                 parentComponent: this,
                 ...this.props
-            }
-        })
-    }
-
-    onFavorite(item, isFavorite) {
-        if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
-        } else {
-            favoriteDao.removeFavoriteItem(item.id.toString())
-        }
-    }
-
-
-    renderRow(projectModel) {
-        return <RepositoryCell
-            onSelect={() => this.onSelect(projectModel)}
+            })}
             key={projectModel.item.id}
             projectModel={projectModel}
-            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+            onFavorite={(item, isFavorite) => ActionUtils.onFavorite(favoriteDao, item, isFavorite)}
         />
     }
 

@@ -1,6 +1,6 @@
 import {AsyncStorage} from 'react-native'
 import DataRepository, {FLAG_STORAGE} from './DataRepository'
-import Utils from '../../common/util/Utils'
+import Utils from '../../util/Utils'
 
 export default class RepositoryUtils {
     constructor(aboutCommon) {

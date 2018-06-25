@@ -10,10 +10,10 @@ import {
     Image
 } from 'react-native'
 import NavigationBar from '../../common/NavigationBar'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import CheckBox from 'react-native-check-box'
-import ArrayUtils from '../../common/util/ArrayUtils'
+import ArrayUtils from '../../util/ArrayUtils'
 
 export default class CustomKeyPage extends Component {
     constructor(props) {

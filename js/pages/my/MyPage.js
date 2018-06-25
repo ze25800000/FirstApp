@@ -14,7 +14,7 @@ import NavigationBar from '../../common/NavigationBar'
 import {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import {MORE_MENU, MoreMenu} from '../../common/MoreMenu'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 import AboutPage from '../about/AboutPage'
 import AboutMePage from '../about/AboutMePage'
 

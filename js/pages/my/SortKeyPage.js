@@ -11,9 +11,9 @@ import {
 } from 'react-native'
 import NavigationBar from '../../common/NavigationBar'
 import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
-import ArrayUtils from '../../common/util/ArrayUtils'
+import ArrayUtils from '../../util/ArrayUtils'
 import SortableListView from 'react-native-sortable-listview'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 
 export default class MyPage extends Component {
     constructor(props) {

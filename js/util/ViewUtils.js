@@ -30,7 +30,7 @@ export default class ViewUtils {
                             height: 22,
                             width: 22
                         }, {tintColor: '#2196f3'}]}
-                        source={expandableIco ? expandableIco : require('../../../res/images/ic_tiaozhuan.png')}/>
+                        source={expandableIco ? expandableIco : require('../../res/images/ic_tiaozhuan.png')}/>
                 </View>
             </TouchableHighlight>
         )
@@ -44,7 +44,7 @@ export default class ViewUtils {
         >
             <Image
                 style={{width: 26, height: 26, tintColor: 'white'}}
-                source={require('../../../res/images/ic_arrow_back_white_36pt.png')}
+                source={require('../../res/images/ic_arrow_back_white_36pt.png')}
             />
 
         </TouchableOpacity>

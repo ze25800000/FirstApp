@@ -15,7 +15,7 @@ import {
 import WebViewPage from '../WebViewPage'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import GlobalStyles from '../../../res/styles/GlobalStyles'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 import AboutCommon, {FLAG_ABOUT}from './AboutCommon'
 import config from '../../../res/data/config.json'
 const FLAG = {

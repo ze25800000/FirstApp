@@ -775,3 +775,4 @@ updateData(k, v) {
 # 9-1 带搜索的NavBar实现-1
 # 9-2 带搜索的NavBar实现-2
 # 9-3 搜索数据显示与onFavorite()方法的提取-1
+# 9-4 搜索数据显示与onFavorite()方法的提取-2

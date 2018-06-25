@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
 import GlobalStyles from '../../res/styles/GlobalStyles'
-import ViewUtils from '../common/util/ViewUtils'
+import ViewUtils from '../util/ViewUtils'
 
 const URL = 'http://www.imooc.com'
 export default class WebViewTest extends Component {

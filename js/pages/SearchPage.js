@@ -11,16 +11,16 @@ import {
     ListView,
     TextInput
 } from 'react-native'
-import NavigationBar from '../common/NavigationBar'
-import ViewUtils from '../common/util/ViewUtils'
+import ViewUtils from '../util/ViewUtils'
 import GlobalStyles from '../../res/styles/GlobalStyles'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import ProjectModel from '../model/ProjectModel'
-import Utils from '../common/util/Utils'
+import Utils from '../util/Utils'
 import RepositoryCell from '../common/RepositoryCell'
 import {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import RepositoryDetail from './RepositoryDetail'
+import ActionUtils from '../util/ActionUtils'
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -150,34 +150,17 @@ export default class PopularPage extends Component {
         </View>
     }
 
-    onSelect(projectModel) {
-        let item = projectModel.item
-        this.props.navigator.push({
-            title: item.full_name,
-            component: RepositoryDetail,
-            params: {
+    renderRow(projectModel) {
+        return <RepositoryCell
+            onSelect={() => ActionUtils.onSelectRepository({
                 flag: FLAG_STORAGE.flag_popular,
                 projectModel: projectModel,
                 parentComponent: this,
                 ...this.props
-            }
-        })
-    }
-
-    onFavorite(item, isFavorite) {
-        if (isFavorite) {
-            this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
-        } else {
-            this.favoriteDao.removeFavoriteItem(item.id.toString())
-        }
-    }
-
-    renderRow(projectModel) {
-        return <RepositoryCell
-            onSelect={() => this.onSelect(projectModel)}
+            })}
             key={projectModel.item.id}
             projectModel={projectModel}
-            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+            onFavorite={(item, isFavorite) => ActionUtils.onFavorite(this.favoriteDao, item)}
         />
     }
 

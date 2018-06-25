@@ -10,7 +10,7 @@ import {
     DeviceEventEmitter
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
-import ViewUtils from '../common/util/ViewUtils'
+import ViewUtils from '../util/ViewUtils'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 
 const TRENDING_URL = 'https://github.com/'

@@ -21,7 +21,9 @@ import TimeSpan from '../model/TimeSpan'
 import Popover from '../common/Popover'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-import Utils from '../common/util/Utils'
+import Utils from '../util/Utils'
+import ActionUtils from '../util/ActionUtils'
+import ArrayUtils from '../util/ArrayUtils'
 
 let timeSpanTextArray = [
     new TimeSpan('今 天', 'since=daily'),
@@ -244,38 +246,25 @@ class TrendingTab extends Component {
         this.setState(dic)
     }
 
-    onSelect(projectModel) {
-        let item = projectModel.item
-        this.props.navigator.push({
-            title: item.fullName,
-            component: RepositoryDetail,
-            params: {
-                flag: FLAG_STORAGE.flag_trending,
-                projectModel: projectModel,
-                parentComponent: this,
-                ...this.props
-            }
-        })
-    }
-
     genFetchUrl(timeSpan, category) {
         return API_URL + category + '?' + timeSpan.searchText
     }
 
-    onFavorite(item, isFavorite) {
-        if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.fullName, JSON.stringify(item))
-        } else {
-            favoriteDao.removeFavoriteItem(item.fullName)
-        }
+    onUpdateFavorite() {
+        this.getFavoriteKeys();
     }
 
     renderRow(projectModel) {
         return <TrendingCell
-            onSelect={() => this.onSelect(projectModel)}
+            onSelect={() => ActionUtils.onSelectRepository({
+                projectModel: projectModel,
+                flag: FLAG_STORAGE.flag_trending,
+                ...this.props,
+                onUpdateFavorite: () => this.onUpdateFavorite()
+            })}
             key={projectModel.item.fullName}
             projectModel={projectModel}
-            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+            onFavorite={(item, isFavorite) => ActionUtils.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}
         />
     }
 

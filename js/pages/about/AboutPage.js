@@ -12,7 +12,7 @@ import {
     Linking,
     Image
 } from 'react-native'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 import {MORE_MENU} from '../../common/MoreMenu'
 import AboutMePage from './AboutMePage'
 import GlobalStyles from '../../../res/styles/GlobalStyles'

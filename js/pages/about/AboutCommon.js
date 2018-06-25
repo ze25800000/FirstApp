@@ -12,13 +12,14 @@ import {
     Image
 } from 'react-native'
 import ParallaxScrollView from 'react-native-parallax-scroll-view'
-import ViewUtils from '../../common/util/ViewUtils'
+import ViewUtils from '../../util/ViewUtils'
 import FavoriteDao from '../../expand/dao/FavoriteDao'
 import {FLAG_STORAGE} from '../../expand/dao/DataRepository'
-import Utils from '../../common/util/Utils'
+import Utils from '../../util/Utils'
 import RepositoryCell from '../../common/RepositoryCell'
 import RepositoryDetail from '../RepositoryDetail'
 import RepositoryUtils from '../../expand/dao/RepositoryUtils'
+import ActionUtils from '../../util/ActionUtils'
 
 let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 
@@ -73,28 +74,6 @@ export default class AboutCommon {
         })
     }
 
-    onSelect(projectModel) {
-        let item = projectModel.item
-        this.props.navigator.push({
-            title: item.full_name,
-            component: RepositoryDetail,
-            params: {
-                flag: FLAG_STORAGE.flag_popular,
-                projectModel: projectModel,
-                parentComponent: this,
-                ...this.props
-            }
-        })
-    }
-
-    onFavorite(item, isFavorite) {
-        if (isFavorite) {
-            this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item))
-        } else {
-            this.favoriteDao.removeFavoriteItem(item.id.toString())
-        }
-    }
-
     renderRepository(projectModels) {
         if (!projectModels || projectModels.length === 0) return null
         let views = []
@@ -102,10 +81,15 @@ export default class AboutCommon {
             let projectModel = projectModels[i]
             views.push(
                 <RepositoryCell
-                    onSelect={() => this.onSelect(projectModel)}
+                    onSelect={() => ActionUtils.onSelectRepository({
+                        flag: FLAG_STORAGE.flag_popular,
+                        projectModel: projectModel,
+                        parentComponent: this,
+                        ...this.props
+                    })}
                     key={i}
                     projectModel={projectModel}
-                    onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+                    onFavorite={(item, isFavorite) => ActionUtils.onFavorite(favoriteDao, item, isFavorite)}
                 />
             )
         }

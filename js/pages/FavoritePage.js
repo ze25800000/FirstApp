@@ -17,7 +17,8 @@ import TrendingCell from '../common/TrendingCell'
 import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-import ArrayUtils from '../common/util/ArrayUtils'
+import ArrayUtils from '../util/ArrayUtils'
+import ActionUtils from '../util/ActionUtils'
 
 export default class FavoritePage extends Component {
     constructor(props) {
@@ -103,20 +104,6 @@ class FavoriteTab extends Component {
         return this.state.dataSource.cloneWithRows(items)
     }
 
-    onSelect(projectModel) {
-        let item = projectModel.item
-        this.props.navigator.push({
-            title: item.full_name,
-            component: RepositoryDetail,
-            params: {
-                flag: FLAG_STORAGE.flag_popular,
-                projectModel: projectModel,
-                parentComponent: this,
-                ...this.props
-            }
-        })
-    }
-
     onFavorite(item, isFavorite) {
         let key = this.props.flag === FLAG_STORAGE.flag_popular ? item.id.toString() : item.fullName
         if (isFavorite) {
@@ -140,7 +127,12 @@ class FavoriteTab extends Component {
         return <CellComponent
             key={this.props.flag === FLAG_STORAGE.flag_popular ? projectModel.item.id : projectModel.item.fullName}
             projectModel={projectModel}
-            onSelect={() => this.onSelect(projectModel)}
+            onSelect={() => ActionUtils.onSelectRepository({
+                flag: FLAG_STORAGE.flag_popular,
+                projectModel: projectModel,
+                parentComponent: this,
+                ...this.props
+            })}
             onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
         />
     }
