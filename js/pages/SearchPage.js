@@ -5,6 +5,7 @@ import {
     Text,
     View,
     RefreshControl,
+    ActivityIndicator,
     DeviceEventEmitter,
     TouchableOpacity,
     Platform,
@@ -19,8 +20,8 @@ import Utils from '../util/Utils'
 import RepositoryCell from '../common/RepositoryCell'
 import {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-import RepositoryDetail from './RepositoryDetail'
 import ActionUtils from '../util/ActionUtils'
+import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
@@ -28,14 +29,25 @@ export default class PopularPage extends Component {
     constructor(props) {
         super(props)
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
+        this.keys = []
         this.favoritKeys = []
         this.state = {
             rightButtonText: '搜索',
             isLoading: false,
+            showBottomButton: true,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => r1 !== r2
             })
         }
+    }
+
+    componentDidMount() {
+        this.initKeys()
+    }
+
+    async initKeys() {
+        this.keys = await this.languageDao.fetch()
     }
 
     loadData() {
@@ -171,16 +183,35 @@ export default class PopularPage extends Component {
                 style={[styles.statusBar, {backgroundColor: '#2196F3'}]}
             />
         }
-        let listView =
+        let listView = !this.state.isLoading ?
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={e => this.renderRow(e)}
-            />
-
+            /> : null
+        let indicatorView = this.state.isLoading ?
+            <ActivityIndicator
+                size='large'
+                style={styles.centering}
+                animating={this.state.isLoading}
+            /> : null
+        let resultView =
+            <View style={{flex: 1}}>
+                {indicatorView}
+                {listView}
+            </View>
+        let bottomButton = !this.state.showBottomButton ?
+            <TouchableOpacity
+                style={[styles.bottomButton, {backgroundColor: '#2196F3'}]}
+            >
+                <View style={{justifyContent: 'center'}}>
+                    <Text style={styles.title}>添加标签</Text>
+                </View>
+            </TouchableOpacity> : null
         return <View style={GlobalStyles.root_container}>
             {statusBar}
             {this.renderNavBar()}
-            {listView}
+            {resultView}
+            {bottomButton}
             <Toast ref={toast => this.toast = toast}/>
         </View>
     }
@@ -210,5 +241,21 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'white',
         fontWeight: '500'
+    },
+    centering: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1
+    },
+    bottomButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: 0.9,
+        height: 40,
+        position: 'absolute',
+        left: 10,
+        right: 10,
+        top: GlobalStyles.window_height - 75,
+        borderRadius: 3
     }
 })

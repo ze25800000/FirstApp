@@ -776,3 +776,17 @@ updateData(k, v) {
 # 9-2 带搜索的NavBar实现-2
 # 9-3 搜索数据显示与onFavorite()方法的提取-1
 # 9-4 搜索数据显示与onFavorite()方法的提取-2
+- 展示加载进度[ActivityIndicator](https://facebook.github.io/react-native/docs/activityindicator.html#docsNav)
+```
+let indicatorView = this.state.isLoading ?
+    <ActivityIndicator
+        size='large'
+        style={styles.centering}
+        animating={this.state.isLoading}
+    /> : null
+```
+
+- 获取设备宽高[Dimensions](https://facebook.github.io/react-native/docs/dimensions.html#docsNav)
+```
+const {height, width} = Dimensions.get('window')
+```
