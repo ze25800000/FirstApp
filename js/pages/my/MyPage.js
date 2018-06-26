@@ -23,7 +23,8 @@ export default class MyPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            customThemeViewVisible: false
+            customThemeViewVisible: false,
+            theme: this.props.theme
         }
     }
 
@@ -82,16 +83,18 @@ export default class MyPage extends Component {
     }
 
     getItem(tag, icon, text) {
-        return ViewUtils.getSettingItem(() => this.onClick(tag), icon, text, {tintColor: '#2196F3'}, null)
+        return ViewUtils.getSettingItem(() => this.onClick(tag), icon, text, this.state.theme.styles.tabBarSelectedIcon, null)
 
     }
 
     render() {
+        let statusBar = {
+            backgroundColor: this.state.theme.themeColor
+        }
         let navigationBar = <NavigationBar
             title={'我的'}
-            statusBar={{
-                backgroundColor: '#2196F3'
-            }}
+            style={this.props.theme.styles.navBar}
+            statusBar={statusBar}
         />
         return <View style={GlobalStyles.root_container}>
             {navigationBar}
@@ -102,7 +105,7 @@ export default class MyPage extends Component {
                     <View style={[styles.item, {height: 90}]}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <Image
-                                style={[{width: 40, height: 40, marginRight: 10}, {tintColor: '#2196f3'}]}
+                                style={[{width: 40, height: 40, marginRight: 10}, this.state.theme.styles.tabBarSelectedIcon]}
                                 source={require('../../../res/images/ic_trending.png')}/>
                             <Text>GitHub Popular</Text>
                         </View>
@@ -111,7 +114,7 @@ export default class MyPage extends Component {
                                 marginRight: 10,
                                 height: 22,
                                 width: 22
-                            }, {tintColor: '#2196f3'}]}
+                            }, this.state.theme.styles.tabBarSelectedIcon]}
                             source={require('../../../res/images/ic_tiaozhuan.png')}/>
                     </View>
                 </TouchableHighlight>

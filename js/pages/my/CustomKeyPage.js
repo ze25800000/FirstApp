@@ -122,9 +122,9 @@ export default class CustomKeyPage extends Component {
                 onClick={() => this.onClick(data)}
                 leftText={leftText}
                 isChecked={isChecked}
-                checkedImage={<Image style={{tintColor: '#6495ED'}}
+                checkedImage={<Image style={this.props.theme.styles.tabBarSelectedIcon}
                                      source={require('./images/ic_check_box.png')}/>}
-                unCheckedImage={<Image style={{tintColor: '#6495ED'}}
+                unCheckedImage={<Image style={this.props.theme.styles.tabBarSelectedIcon}
                                        source={require('./images/ic_check_box_outline_blank.png')}/>}
 
             />
@@ -137,6 +137,7 @@ export default class CustomKeyPage extends Component {
         let rightButtonTitle = this.isRemoveKey ? '移除' : '保存'
         return <View style={styles.container}>
             <NavigationBar
+                style={this.props.theme.styles.navBar}
                 title={title}
                 leftButton={ViewUtils.getLeftButton(() => this.onBack())}
                 rightButton={ViewUtils.getRightButton(rightButtonTitle, () => this.onSave())}

@@ -189,7 +189,7 @@ export default class PopularPage extends Component {
             </TouchableOpacity>
         return <View
             style={{
-                backgroundColor: '#2196f3',
+                backgroundColor: this.props.theme.themeColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 height: (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios : GlobalStyles.nav_bar_height_android
@@ -211,6 +211,7 @@ export default class PopularPage extends Component {
             })}
             key={projectModel.item.id}
             projectModel={projectModel}
+            theme={this.props.theme}
             onFavorite={(item, isFavorite) => ActionUtils.onFavorite(this.favoriteDao, item)}
         />
     }
@@ -219,7 +220,7 @@ export default class PopularPage extends Component {
         let statusBar = null
         if (Platform.OS === 'ios') {
             statusBar = <View
-                style={[styles.statusBar, {backgroundColor: '#2196F3'}]}
+                style={[styles.statusBar, this.props.theme.styles.navBar]}
             />
         }
         let listView = !this.state.isLoading ?
@@ -243,7 +244,7 @@ export default class PopularPage extends Component {
                 onPress={() => {
                     this.saveKey()
                 }}
-                style={[styles.bottomButton, {backgroundColor: '#2196F3'}]}
+                style={[styles.bottomButton, {backgroundColor: this.props.theme.themeColor}]}
             >
                 <View style={{justifyContent: 'center'}}>
                     <Text style={styles.title}>添加标签</Text>

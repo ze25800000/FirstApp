@@ -83,6 +83,7 @@ export default class RepositoryDetail extends Component {
                 <NavigationBar
                     title={this.state.title}
                     leftButton={ViewUtils.getLeftButton(() => this.goBack())}
+                    style={this.props.theme.styles.navBar}
                     rightButton={this.renderRightButton()}
                 />
                 <WebView

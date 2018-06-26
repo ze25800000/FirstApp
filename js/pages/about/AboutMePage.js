@@ -172,22 +172,22 @@ export default class AboutMePage extends Component {
 
     render() {
         let content = <View>
-            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.BLOG), require('../../../res/images/ic_computer.png'), FLAG.BLOG.name, {tintColor: '#2196F3'},
+            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.BLOG), require('../../../res/images/ic_computer.png'), FLAG.BLOG.name, this.props.theme.styles.tabBarSelectedIcon,
                 this.getClickIcon(this.state.showBlog))}
             <View style={GlobalStyles.line}/>
             {this.state.showBlog ? this.renderItems(FLAG.BLOG.items) : null}
 
-            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.REPOSITORY), require('../../../res/images/ic_code.png'), FLAG.REPOSITORY, {tintColor: '#2196F3'},
+            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.REPOSITORY), require('../../../res/images/ic_code.png'), FLAG.REPOSITORY, this.props.theme.styles.tabBarSelectedIcon,
                 this.getClickIcon(this.state.showRepository))}
             <View style={GlobalStyles.line}/>
             {this.state.showRepository ? this.aboutCommon.renderRepository(this.state.projectModels) : null}
 
-            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.QQ), require('../../../res/images/ic_computer.png'), FLAG.QQ.name, {tintColor: '#2196F3'},
+            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.QQ), require('../../../res/images/ic_computer.png'), FLAG.QQ.name, this.props.theme.styles.tabBarSelectedIcon,
                 this.getClickIcon(this.state.showQQ))}
             <View style={GlobalStyles.line}/>
             {this.state.showQQ ? this.renderItems(FLAG.QQ.items, true) : null}
 
-            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.CONTACT), require('../../../res/images/ic_contacts.png'), FLAG.CONTACT.name, {tintColor: '#2196F3'},
+            {ViewUtils.getSettingItem(()=>this.onClick(FLAG.CONTACT), require('../../../res/images/ic_contacts.png'), FLAG.CONTACT.name, this.props.theme.styles.tabBarSelectedIcon,
                 this.getClickIcon(this.state.showContact))}
             <View style={GlobalStyles.line}/>
             {this.state.showContact ? this.renderItems(FLAG.CONTACT.items, true) : null}

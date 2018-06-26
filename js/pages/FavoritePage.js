@@ -27,6 +27,9 @@ import ViewUtils from '../util/ViewUtils'
 export default class FavoritePage extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            theme: this.props.theme
+        }
     }
 
     renderMoreView() {
@@ -40,17 +43,19 @@ export default class FavoritePage extends Component {
     }
 
     render() {
+        let statusBar = {
+            backgroundColor: this.state.theme.themeColor
+        }
         let Navigation =
             <NavigationBar
                 title={'收藏'}
+                style={this.props.theme.styles.navBar}
                 rightButton={ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
-                statusBar={{
-                    backgroundColor: '#2196F3'
-                }}
+                statusBar={statusBar}
             />
         let content =
             <ScrollableTabView
-                tabBarBackgroundColor={'#2196F3'}
+                tabBarBackgroundColor={this.state.theme.themeColor}
                 tabBarActiveTextColor={'#fff'}
                 tabBarInactiveTextColor={'mintcream'}
                 tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
@@ -76,7 +81,8 @@ class FavoriteTab extends Component {
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
             isLoading: false,
-            favoriteKeys: []
+            favoriteKeys: [],
+            theme: this.props.theme
         }
     }
 
@@ -149,6 +155,7 @@ class FavoriteTab extends Component {
                 parentComponent: this,
                 ...this.props
             })}
+            theme={this.props.theme}
             onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
         />
     }
@@ -162,10 +169,10 @@ class FavoriteTab extends Component {
                 refreshControl={<RefreshControl
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.loadData()}
-                    colors={['#2196F3']}
-                    tintColor={['#2196F3']}
+                    colors={[this.state.theme.themeColor]}
+                    tintColor={[this.state.theme.themeColor]}
                     title={'Loading...'}
-                    titleColor={'#2196F3'}
+                    titleColor={this.state.theme.themeColor}
                 />}
             />
         </View>

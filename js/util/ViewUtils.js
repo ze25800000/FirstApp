@@ -29,7 +29,7 @@ export default class ViewUtils {
                             marginRight: 10,
                             height: 22,
                             width: 22
-                        }, {tintColor: '#2196f3'}]}
+                        }, tintStyle]}
                         source={expandableIco ? expandableIco : require('../../res/images/ic_tiaozhuan.png')}/>
                 </View>
             </TouchableHighlight>

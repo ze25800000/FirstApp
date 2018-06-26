@@ -43,7 +43,7 @@ export default class RepositoryCell extends Component {
                 style={[{
                     width: 22,
                     height: 22
-                }, {tintColor: '#2196f3'}]}
+                }, this.props.theme.styles.tabBarSelectedIcon]}
                 source={this.state.favoriteIcon}
             />
         </TouchableOpacity> : null

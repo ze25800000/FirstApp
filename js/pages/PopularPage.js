@@ -35,7 +35,8 @@ export default class PopularPage extends Component {
         super(props)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
         this.state = {
-            language: []
+            language: [],
+            theme: this.props.theme
         }
     }
 
@@ -88,17 +89,19 @@ export default class PopularPage extends Component {
     }
 
     render() {
+        let statusBar = {
+            backgroundColor: this.state.theme.themeColor
+        }
         let navigationBar =
             <NavigationBar
                 title={'最热'}
                 rightButton={this.renderRightButton()}
-                statusBar={{
-                    backgroundColor: '#2196F3'
-                }}
+                style={this.props.theme.styles.navBar}
+                statusBar={statusBar}
             />
         let content = this.state.language.length > 0 ?
             <ScrollableTabView
-                tabBarBackgroundColor={'#2196F3'}
+                tabBarBackgroundColor={this.state.theme.themeColor}
                 tabBarActiveTextColor={'#fff'}
                 tabBarInactiveTextColor={'mintcream'}
                 tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
@@ -126,7 +129,8 @@ class PopularTab extends Component {
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
             isLoading: false,
-            favoriteKeys: []
+            favoriteKeys: [],
+            theme: this.props.theme
         }
     }
 
@@ -208,6 +212,7 @@ class PopularTab extends Component {
                 parentComponent: this,
                 ...this.props
             })}
+            theme={this.props.theme}
             key={projectModel.item.id}
             projectModel={projectModel}
             onFavorite={(item, isFavorite) => ActionUtils.onFavorite(favoriteDao, item, isFavorite)}
@@ -222,10 +227,10 @@ class PopularTab extends Component {
                 refreshControl={<RefreshControl
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.loadData()}
-                    colors={['#2196F3']}
-                    tintColor={['#2196F3']}
+                    colors={[this.props.theme.themeColor]}
+                    tintColor={this.props.theme.themeColor}
                     title={'Loading...'}
-                    titleColor={'#2196F3'}
+                    titleColor={this.props.theme.themeColor}
                 />}
             />
         </View>

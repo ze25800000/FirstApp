@@ -111,6 +111,7 @@ export default class MyPage extends Component {
             <NavigationBar
                 title={title}
                 leftButton={ViewUtils.getLeftButton(() => this.onBack())}
+                style={this.props.theme.styles.navBar}
                 rightButton={rightButton}
             />
             <SortableListView
@@ -136,7 +137,7 @@ class SortCell extends Component {
         >
             <View style={styles.row}>
                 <Image
-                    style={styles.image}
+                    style={[styles.image,this.props.theme.styles.tabBarSelectedIcon]}
                     source={require('./images/ic_sort.png')}/>
                 <Text>{this.props.data.name}</Text>
             </View>
