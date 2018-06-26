@@ -26,6 +26,8 @@ import {FLAG_TAB} from './HomePage'
 import {MORE_MENU} from '../common/MoreMenu'
 import MoreMenu from '../common/MoreMenu'
 import ViewUtils from '../util/ViewUtils'
+import BaseComponent from './BaseComponent'
+import CustomThemePage from './my/CustomTheme'
 
 let timeSpanTextArray = [
     new TimeSpan('今 天', 'since=daily'),
@@ -35,7 +37,7 @@ let timeSpanTextArray = [
 let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
 let dataRepository = new DataRepository(FLAG_STORAGE.flag_trending)
 const API_URL = 'https://github.com/trending/'
-export default class TrendingPage extends Component {
+export default class TrendingPage extends BaseComponent {
     constructor(props) {
         super(props)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language)
@@ -43,15 +45,13 @@ export default class TrendingPage extends Component {
             language: [],
             isVisible: false,
             timeSpan: timeSpanTextArray[0],
-            theme: this.props.theme
+            theme: this.props.theme,
+            customThemeViewVisible: false
         }
+        this.loadLanguage()
     }
 
-    componentDidMount() {
-        this.loadData()
-    }
-
-    async loadData() {
+    async loadLanguage() {
         let result = await this.languageDao.fetch()
         try {
             this.setState({
@@ -69,6 +69,13 @@ export default class TrendingPage extends Component {
             {...params}
             menus={[MORE_MENU.Custom_Language, MORE_MENU.Sort_Language, MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
             anchorView={() => this.refs.moreMenuButton}
+            onMoreMenuSelect={(e) => {
+                if (e === MORE_MENU.Custom_Theme) {
+                    this.setState({
+                        customThemeViewVisible: true
+                    })
+                }
+            }}
         />
     }
 
@@ -114,7 +121,15 @@ export default class TrendingPage extends Component {
             </TouchableOpacity>
         </View>
     }
-
+    renderCustomThemeView() {
+        return (
+            <CustomThemePage
+                visible={this.state.customThemeViewVisible}
+                {...this.props}
+                onClose={() => this.setState({customThemeViewVisible: false})}
+            />
+        )
+    }
     render() {
         let statusBar = {
             backgroundColor: this.state.theme.themeColor
@@ -123,13 +138,13 @@ export default class TrendingPage extends Component {
             <NavigationBar
                 titleView={this.renderTitleView()}
                 rightButton={ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
-                style={this.props.theme.styles.navBar}
+                style={this.state.theme.styles.navBar}
                 statusBar={statusBar}
             />
 
         let content = this.state.language.length > 0 ?
             <ScrollableTabView
-                tabBarBackgroundColor={this.props.theme.themeColor}
+                tabBarBackgroundColor={this.state.theme.themeColor}
                 tabBarActiveTextColor={'#fff'}
                 tabBarInactiveTextColor={'mintcream'}
                 tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
@@ -170,6 +185,7 @@ export default class TrendingPage extends Component {
             {content}
             {timeSpanView}
             {this.renderMoreView()}
+            {this.renderCustomThemeView()}
         </View>
     }
 }
@@ -203,6 +219,9 @@ class TrendingTab extends Component {
         } else if (this.isFavoriteChanged) {
             this.isFavoriteChanged = false
             this.getFavoriteKeys()
+        } else if (nextProps.theme !== this.state.theme) {
+            this.updateState({theme: nextProps.theme})
+            this.flushFavoriteState()
         }
     }
 

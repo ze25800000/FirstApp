@@ -10,11 +10,10 @@ import {
     TextInput
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
-import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository'
+import {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import RepositoryCell from '../common/RepositoryCell'
 import TrendingCell from '../common/TrendingCell'
-import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import ArrayUtils from '../util/ArrayUtils'
@@ -23,12 +22,15 @@ import {FLAG_TAB} from './HomePage'
 import {MORE_MENU} from '../common/MoreMenu'
 import MoreMenu from '../common/MoreMenu'
 import ViewUtils from '../util/ViewUtils'
+import BaseComponent from './BaseComponent'
+import CustomThemePage from './my/CustomTheme'
 
-export default class FavoritePage extends Component {
+export default class FavoritePage extends BaseComponent {
     constructor(props) {
         super(props)
         this.state = {
-            theme: this.props.theme
+            theme: this.props.theme,
+            customThemeViewVisible: false
         }
     }
 
@@ -39,7 +41,24 @@ export default class FavoritePage extends Component {
             {...params}
             menus={[MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
             anchorView={() => this.refs.moreMenuButton}
+            onMoreMenuSelect={(e) => {
+                if (e === MORE_MENU.Custom_Theme) {
+                    this.setState({
+                        customThemeViewVisible: true
+                    })
+                }
+            }}
         />
+    }
+
+    renderCustomThemeView() {
+        return (
+            <CustomThemePage
+                visible={this.state.customThemeViewVisible}
+                {...this.props}
+                onClose={() => this.setState({customThemeViewVisible: false})}
+            />
+        )
     }
 
     render() {
@@ -49,7 +68,7 @@ export default class FavoritePage extends Component {
         let Navigation =
             <NavigationBar
                 title={'收藏'}
-                style={this.props.theme.styles.navBar}
+                style={this.state.theme.styles.navBar}
                 rightButton={ViewUtils.getMoreButton(() => this.refs.moreMenu.open())}
                 statusBar={statusBar}
             />
@@ -69,6 +88,7 @@ export default class FavoritePage extends Component {
             {Navigation}
             {content}
             {this.renderMoreView()}
+            {this.renderCustomThemeView()}
         </View>
     }
 }

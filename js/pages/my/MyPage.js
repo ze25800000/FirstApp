@@ -18,8 +18,9 @@ import ViewUtils from '../../util/ViewUtils'
 import AboutPage from '../about/AboutPage'
 import AboutMePage from '../about/AboutMePage'
 import CustomThemePage from './CustomTheme'
+import BaseComponent from '../BaseComponent'
 
-export default class MyPage extends Component {
+export default class MyPage extends BaseComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -93,7 +94,7 @@ export default class MyPage extends Component {
         }
         let navigationBar = <NavigationBar
             title={'我的'}
-            style={this.props.theme.styles.navBar}
+            style={this.state.theme.styles.navBar}
             statusBar={statusBar}
         />
         return <View style={GlobalStyles.root_container}>
@@ -105,7 +106,11 @@ export default class MyPage extends Component {
                     <View style={[styles.item, {height: 90}]}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <Image
-                                style={[{width: 40, height: 40, marginRight: 10}, this.state.theme.styles.tabBarSelectedIcon]}
+                                style={[{
+                                    width: 40,
+                                    height: 40,
+                                    marginRight: 10
+                                }, this.state.theme.styles.tabBarSelectedIcon]}
                                 source={require('../../../res/images/ic_trending.png')}/>
                             <Text>GitHub Popular</Text>
                         </View>

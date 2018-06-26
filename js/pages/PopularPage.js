@@ -16,7 +16,6 @@ import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import RepositoryCell from '../common/RepositoryCell'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
-import RepositoryDetail from './RepositoryDetail'
 import ProjectModel from '../model/ProjectModel'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import Utils from '../util/Utils'
@@ -25,26 +24,26 @@ import ActionUtils from '../util/ActionUtils'
 import ViewUtils from '../util/ViewUtils'
 import MoreMenu, {MORE_MENU} from '../common/MoreMenu'
 import {FLAG_TAB} from './HomePage'
+import BaseComponent from './BaseComponent'
+import CustomThemePage from './my/CustomTheme'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
 let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 
-export default class PopularPage extends Component {
+export default class PopularPage extends BaseComponent {
     constructor(props) {
         super(props)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
         this.state = {
             language: [],
-            theme: this.props.theme
+            theme: this.props.theme,
+            customThemeViewVisible: false
         }
+        this.loadLanguage()
     }
 
-    componentDidMount() {
-        this.loadData()
-    }
-
-    async loadData() {
+    async loadLanguage() {
         let result = await this.languageDao.fetch()
         try {
             this.setState({
@@ -85,9 +84,24 @@ export default class PopularPage extends Component {
             {...params}
             menus={[MORE_MENU.Custom_Key, MORE_MENU.Sort_Key, MORE_MENU.Remove_Key, MORE_MENU.Custom_Theme, MORE_MENU.About_Author, MORE_MENU.About]}
             anchorView={() => this.refs.moreMenuButton}
+            onMoreMenuSelect={(e) => {
+                if (e === MORE_MENU.Custom_Theme) {
+                    this.setState({
+                        customThemeViewVisible: true
+                    })
+                }
+            }}
         />
     }
-
+    renderCustomThemeView() {
+        return (
+            <CustomThemePage
+                visible={this.state.customThemeViewVisible}
+                {...this.props}
+                onClose={() => this.setState({customThemeViewVisible: false})}
+            />
+        )
+    }
     render() {
         let statusBar = {
             backgroundColor: this.state.theme.themeColor
@@ -96,7 +110,7 @@ export default class PopularPage extends Component {
             <NavigationBar
                 title={'最热'}
                 rightButton={this.renderRightButton()}
-                style={this.props.theme.styles.navBar}
+                style={this.state.theme.styles.navBar}
                 statusBar={statusBar}
             />
         let content = this.state.language.length > 0 ?
@@ -117,6 +131,7 @@ export default class PopularPage extends Component {
             {navigationBar}
             {content}
             {this.renderMoreView()}
+            {this.renderCustomThemeView()}
         </View>
     }
 }
@@ -145,10 +160,13 @@ class PopularTab extends Component {
         if (this.listenner) this.listenner.remove()
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
         if (this.isFavoriteChanged) {
             this.isFavoriteChanged = false
             this.getFavoriteKeys()
+        } else if (nextProps.theme !== this.state.theme) {
+            this.updateState({theme: nextProps.theme})
+            this.flushFavoriteState()
         }
     }
 
@@ -212,7 +230,7 @@ class PopularTab extends Component {
                 parentComponent: this,
                 ...this.props
             })}
-            theme={this.props.theme}
+            theme={this.state.theme}
             key={projectModel.item.id}
             projectModel={projectModel}
             onFavorite={(item, isFavorite) => ActionUtils.onFavorite(favoriteDao, item, isFavorite)}
@@ -227,10 +245,10 @@ class PopularTab extends Component {
                 refreshControl={<RefreshControl
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.loadData()}
-                    colors={[this.props.theme.themeColor]}
-                    tintColor={this.props.theme.themeColor}
+                    colors={[this.state.theme.themeColor]}
+                    tintColor={this.state.theme.themeColor}
                     title={'Loading...'}
-                    titleColor={this.props.theme.themeColor}
+                    titleColor={this.state.theme.themeColor}
                 />}
             />
         </View>
