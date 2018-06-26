@@ -12,11 +12,13 @@ import {
 import NavigationBar from '../common/NavigationBar'
 import ViewUtils from '../util/ViewUtils'
 import FavoriteDao from '../expand/dao/FavoriteDao'
+import BackPressComponent from '../common/BackPressComponent'
 
 const TRENDING_URL = 'https://github.com/'
 export default class RepositoryDetail extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)})
         this.url = this.props.projectModel.item.html_url ? this.props.projectModel.item.html_url : TRENDING_URL + this.props.projectModel.item.fullName
         let title = this.props.projectModel.item.full_name ? this.props.projectModel.item.full_name : this.props.projectModel.item.fullName
         this.favoriteDao = new FavoriteDao(this.props.flag)
@@ -28,6 +30,19 @@ export default class RepositoryDetail extends Component {
             favoriteIcon: this.props.projectModel.isFavorite ?
                 require('../../res/images/ic_star.png') : require('../../res/images/ic_star_navbar.png')
         }
+    }
+
+    componentDidMount() {
+        this.backPress.componentDidMount()
+    }
+
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+
+    onBackPress(e) {
+        this.goBack()
+        return true
     }
 
     goBack() {

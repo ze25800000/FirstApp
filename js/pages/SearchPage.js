@@ -24,12 +24,14 @@ import ActionUtils from '../util/ActionUtils'
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao'
 import {ACTION_HOME} from './HomePage'
 import makeCancelable from '../util/Cancelable'
+import BackPressComponent from '../common/BackPressComponent'
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
 export default class PopularPage extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)})
         this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key)
         this.isKeyChanged = false
@@ -46,6 +48,7 @@ export default class PopularPage extends Component {
     }
 
     componentDidMount() {
+        this.backPress.componentDidMount()
         this.initKeys()
     }
 
@@ -53,6 +56,7 @@ export default class PopularPage extends Component {
         if (this.isKeyChanged) {
             DeviceEventEmitter.emit('ACTION_HOME', ACTION_HOME.A_RESTART)
         }
+        this.backPress.componentWillUnmount()
     }
 
     saveKey() {
@@ -149,6 +153,7 @@ export default class PopularPage extends Component {
     onBackPress() {
         this.refs.input.blur()
         this.props.navigator.pop()
+        return true
     }
 
     onRightButtonClick() {

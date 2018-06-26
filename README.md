@@ -853,3 +853,8 @@ this.cancelable && this.cancelable.cancel()
 - [Modal](https://facebook.github.io/react-native/docs/modal.html#docsNav)
 # 11-2 应用自定义多彩主题页面-1
 # 11-3 应用自定义多彩主题页面-2
+# 11-4 实现自定义多彩主题变换
+# 11-5 React Native原生模块的封装(Android)
+[React Native Android原生模块开发实战|教程|心得](http://www.devio.org/2017/01/22/React-Native-Android%E5%8E%9F%E7%94%9F%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98-%E6%95%99%E7%A8%8B-%E5%BF%83%E5%BE%97/)
+
+# 12-1 项目发布前的优化(Android) android返回键

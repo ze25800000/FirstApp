@@ -16,15 +16,32 @@ import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao'
 import CheckBox from 'react-native-check-box'
 import ArrayUtils from '../../util/ArrayUtils'
 import {ACTION_HOME, FLAG_TAB} from '../HomePage'
+import BackPressComponent from '../../common/BackPressComponent'
 
 export default class CustomKeyPage extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)})
         this.isRemoveKey = this.props.isRemoveKey ? true : false
         this.chanageValues = []
         this.state = {
             dataArray: []
         }
+    }
+
+    componentDidMount() {
+        this.backPress.componentDidMount()
+        this.languageDao = new LanguageDao(this.props.flag)
+        this.loadData()
+    }
+
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+
+    onBackPress(e) {
+        this.onBack()
+        return true
     }
 
     onSave() {
@@ -63,11 +80,6 @@ export default class CustomKeyPage extends Component {
                 }
             ]
         )
-    }
-
-    componentDidMount() {
-        this.languageDao = new LanguageDao(this.props.flag)
-        this.loadData()
     }
 
     async loadData() {

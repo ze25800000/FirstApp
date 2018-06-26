@@ -16,10 +16,12 @@ import ArrayUtils from '../../util/ArrayUtils'
 import SortableListView from 'react-native-sortable-listview'
 import ViewUtils from '../../util/ViewUtils'
 import {ACTION_HOME, FLAG_TAB} from '../HomePage'
+import BackPressComponent from '../../common/BackPressComponent'
 
 export default class MyPage extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)})
         this.dataArray = []
         this.sortResultArray = []
         this.originalCheckedArray = []
@@ -29,8 +31,19 @@ export default class MyPage extends Component {
     }
 
     componentDidMount() {
+        this.backPress.componentDidMount()
         this.languageDao = new LanguageDao(this.props.flag)
         this.loadData()
+    }
+
+
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+
+    onBackPress(e) {
+        this.onBack()
+        return true
     }
 
     async loadData() {
@@ -137,7 +150,7 @@ class SortCell extends Component {
         >
             <View style={styles.row}>
                 <Image
-                    style={[styles.image,this.props.theme.styles.tabBarSelectedIcon]}
+                    style={[styles.image, this.props.theme.styles.tabBarSelectedIcon]}
                     source={require('./images/ic_sort.png')}/>
                 <Text>{this.props.data.name}</Text>
             </View>

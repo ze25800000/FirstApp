@@ -20,12 +20,14 @@ import RepositoryCell from '../../common/RepositoryCell'
 import RepositoryDetail from '../RepositoryDetail'
 import RepositoryUtils from '../../expand/dao/RepositoryUtils'
 import ActionUtils from '../../util/ActionUtils'
+import BackPressComponent from '../../common/BackPressComponent'
 
 let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
 
 export let FLAG_ABOUT = {flag_about: 'about', flag_about_me: 'about_me'}
 export default class AboutCommon {
     constructor(props, updateState, flag_about, config) {
+        this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)})
         this.props = props
         this.updateState = updateState
         this.flag_about = flag_about
@@ -37,6 +39,7 @@ export default class AboutCommon {
     }
 
     componentDidMount() {
+        this.backPress.componentDidMount()
         if (this.flag_about === FLAG_ABOUT.flag_about) {
             this.repositoryUtils.fetchRepository(this.config.info.currentRepoUrl)
         } else {
@@ -47,6 +50,15 @@ export default class AboutCommon {
             }
             this.repositoryUtils.fetchRepositories(urls)
         }
+    }
+
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+
+    onBackPress(e) {
+        this.props.navigator.pop()
+        return true
     }
 
     onNotifyDataChanged(items) {
